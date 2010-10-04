@@ -8,6 +8,7 @@ This code is the implementation deriving from those papers:
 This code is cross-platform and should compile under Linux and Window$ OS.
 
 This code is distributed under the GPL License
+(copyright CNRS, INSA-Lyon, UCBL, INSERM.)
 
 **************************************************************************
 Dependencies:
