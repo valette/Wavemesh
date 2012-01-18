@@ -12,6 +12,7 @@ INCLUDE_DIRECTORIES(
  vtkMultiresolutionIO.cxx
  vtkSparseMatrix.cxx
  vtkWaveletSubdivisionFilter.cxx
+vtkMultiresolutionIOSeqII.cxx
  )
  
 
@@ -31,6 +32,7 @@ TARGET_LINK_LIBRARIES(vtkWavemesh ${LIB_ADDED})
 
 SET(WAVEMESH_EXAMPLES
 wavemesh
+SWA_TWA
 DisplayWavelet
 )
 FOREACH(loop_var ${WAVEMESH_EXAMPLES})
