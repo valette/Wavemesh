@@ -57,6 +57,9 @@ IF (BUILD_RANGECODING)
     SUBDIRS(RangeCoding)
 ENDIF (BUILD_RANGECODING)
 
+SUBDIRS(VectorCompression)
+
+
 IF(BUILD_WAVEMESH)
 	IF(NOT BUILD_RANGECODING)
 	MESSAGE(FATAL_ERROR "You need to set RANGECODING build to ON in order to build Wavemesh")
