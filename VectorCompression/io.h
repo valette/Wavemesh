@@ -105,11 +105,12 @@ void writeFile (coeffs input, const char *file) {
 }
 
 
-coeffs readFile (const char *file, int vectorSize) {
+coeffs readFile (const char *file) {
 	coeffs result;
 	std::string line;
 
 	std::ifstream pFile (file);
+	int vectorSize = -1;
 
 	if (pFile.is_open()) {
 		while(!pFile.eof()) {
@@ -121,10 +122,14 @@ coeffs readFile (const char *file, int vectorSize) {
 				tempCoeff.push_back(coeff);
 			}
 			if (tempCoeff.size()) {
-				if (tempCoeff.size() != vectorSize) {
-					std::cout << "Error while reading file!" << std::endl;
-					std::cout << "only " << tempCoeff.size() << "coefficients where read" << std::endl;
-					return result;
+				if (vectorSize <0) {
+					vectorSize = tempCoeff.size();
+				} else {
+					if (tempCoeff.size() != vectorSize) {
+						std::cout << "Error while reading file!" << std::endl;
+						std::cout << "only " << tempCoeff.size() << "coefficients where read" << std::endl;
+						return result;
+					}
 				}
 				result.push_back(tempCoeff);
 			}

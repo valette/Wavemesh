@@ -9,7 +9,6 @@
 
 int main( int argc, char *argv[] )
 {
-	int vectorSize = 32;
 	int quantization = 8;
 	char *outputFile = 0;
 
@@ -42,7 +41,7 @@ int main( int argc, char *argv[] )
 	}
 
 	if (verificationFile) {
-		coeffs reference = readFile(verificationFile, vectorSize);
+		coeffs reference = readFile(verificationFile);
 		double maxError = 0;
 		for (int i = 0; i != reference.size(); i++) {
 			coefficient tempCoeff = reference[i];

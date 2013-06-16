@@ -9,10 +9,8 @@
 
 int main( int argc, char *argv[] )
 {
-	int vectorSize = 32;
 	int quantization = 8;
 	char *outputFile = 0;
-
 
 	if(argc < 1)
 	{
@@ -34,7 +32,7 @@ int main( int argc, char *argv[] )
 	}
 
 	std::cout << "Quantization : " << quantization << " bits" << std::endl;
-	coeffs input = readFile(argv[1], vectorSize);
+	coeffs input = readFile(argv[1]);
 	std::cout << input.size() << " coefficients" << std::endl;
 	if (outputFile) {
 		encode(input, outputFile, quantization);
