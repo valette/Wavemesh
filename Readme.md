@@ -1,3 +1,7 @@
+Wavemesh
+========
+
+### References ###
 This code is the implementation deriving from those papers:
 
 [VALE-04a] Valette S., Prost R., "Wavelet Based Multiresolution Analysis of Irregular Surface Meshes", IEEE Trans Visu Comp Grap, vol. 10, no. 2, pp. 113-122, 2004 .
@@ -7,24 +11,23 @@ This code is the implementation deriving from those papers:
 
 This code is cross-platform and should compile under Linux and Window$ OS.
 
+### License ###
 This code is distributed under the GPL License
 (copyright CNRS, INSA-Lyon, UCBL, INSERM.)
 
-**************************************************************************
-Dependencies:
-VTK (version >5) www.vtk.org
-CMAKE www.cmake.org
-**************************************************************************
+### Dependencies: ###
+* VTK (version 5) www.vtk.org
+* CMAKE www.cmake.org
 
-Simple compilation HowTo under Linux:
+### Simple compilation HowTo under Linux ###
 
-- extract the archive and launch a terminal under the extracted directory
-- type "cmake . -DCMAKE_BUILD_TYPE=Release"
-- then "make"
+  git clone https://github.com/valette/Wavemesh.git
+  cmake . -DCMAKE_BUILD_TYPE=Release
+  make
 
 the executables (wavemesh and others should be found under the "bin" subdirectory)
 
-*************************************************************************
+### Options ###
 execute wavemesh without arguments to see the available options.
 
 comments, suggestions : sebastien.valette@creatis.insa-lyon.fr
