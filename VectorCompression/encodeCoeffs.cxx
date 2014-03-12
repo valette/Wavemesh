@@ -34,6 +34,7 @@ int main( int argc, char *argv[] )
 	std::cout << "Quantization : " << quantization << " bits" << std::endl;
 	coeffs input = readFile(argv[1]);
 	std::cout << input.size() << " coefficients" << std::endl;
+	std::cout << input[0].size() << " scalars per coefficient" << std::endl;
 	if (outputFile) {
 		encode(input, outputFile, quantization);
 	} else {

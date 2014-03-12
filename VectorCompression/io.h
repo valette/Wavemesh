@@ -24,7 +24,7 @@ void encode(coeffs coefficients, const char *outputFile, int quantization) {
 	Coder->EncodeByte(quantization);
 	Coder->EncodeFloat(max);
 	Coder->EncodeInt(coefficients.size());
-	Coder->EncodeByte(coefficients[0].size());
+	Coder->EncodeInt(coefficients[0].size());
 
 	double imax = 2 << (quantization - 1) - 1;
 	qsmodel model;
@@ -59,7 +59,7 @@ coeffs decode(const char *inputFile) {
 	std::cout << "Max scalar value : " << max << std::endl;
 
 	int numCoeffs = Coder->DecodeInt();
-	int coeffSize = Coder->DecodeByte();
+	int coeffSize = Coder->DecodeInt();
 	std::cout << numCoeffs << " vectors" << std::endl;
 	std::cout << coeffSize << " scalars per vector" << std::endl;
 
