@@ -33,6 +33,6 @@ the executables (wavemesh and others should be found under the "bin" subdirector
 ### Options ###
 execute wavemesh without arguments to see the available options.
 
-comments, suggestions : sebastien.valette@creatis.insa-lyon.fr
+comments, suggestions : https://github.com/valette/Wavemesh/issues
 
 
