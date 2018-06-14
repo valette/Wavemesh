@@ -10,8 +10,6 @@ INCLUDE_DIRECTORIES(
  ADD_LIBRARY(vtkWavemesh
  vtkArithmeticCoder.cxx
  vtkMultiresolutionIO.cxx
- vtkMultiresolutionIOSeq.cxx
- vtkMultiresolutionIOSeqII.cxx
  vtkSparseMatrix.cxx
  vtkWaveletSubdivisionFilter.cxx
  )
@@ -23,7 +21,6 @@ SET(LIB_ADDED vtkRangeCoding vtkSurface ${VTK_LIBRARIES})
 TARGET_LINK_LIBRARIES(vtkWavemesh ${LIB_ADDED})
 
 SET(WAVEMESH_EXAMPLES
-SWA_TWA
 wavemesh
 DisplayWavelet
 )
