@@ -19,7 +19,7 @@ This code is distributed under the GPL License
 (copyright CNRS, INSA-Lyon, UCBL, INSERM.)
 
 ### Dependencies: ###
-* VTK (version 5) www.vtk.org
+* VTK (version 6.0 or later) www.vtk.org
 * CMAKE www.cmake.org
 
 ### Simple compilation HowTo under Linux ###
