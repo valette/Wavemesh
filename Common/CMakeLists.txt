@@ -1,3 +1,7 @@
+ include_directories(
+    ${VTK_INCLUDE_DIR}
+    ${VTKSURFACE_INCLUDE_DIR}
+)
  
  # --------------------------------------------------------------------------
  # Library compilation
@@ -16,18 +20,8 @@
  vtkNeighbourhoodComputation.cxx
  vtkCurvatureMeasure.cxx
  )
- 
 
-# Set the added libraries
-SET(LIB_ADDED 
-vtkCommon
-vtkFiltering
-vtkImaging
-vtkIO
-vtkRendering
-vtkHybrid)
-
-TARGET_LINK_LIBRARIES(vtkSurface ${LIB_ADDED})
+target_link_libraries(vtkSurface ${VTK_LIBRARIES})
 
 SET(COMMON_EXAMPLES
 viewer
@@ -37,19 +31,5 @@ ExamplevtkSurface
 )
 FOREACH(loop_var ${COMMON_EXAMPLES})
 	ADD_EXECUTABLE(${loop_var} ${loop_var}.cxx)
-	TARGET_LINK_LIBRARIES(${loop_var} vtkSurface
-	vtkCommon vtkFiltering vtkGraphics vtkImaging vtkIO vtkRendering vtkHybrid)
+	TARGET_LINK_LIBRARIES(${loop_var} vtkSurface ${VTK_LIBRARIES})
 ENDFOREACH(loop_var)
-
-#-----------------------------------------------------------------------------
-# Include the file 'InstallLibrary.cmake' which does the clean install job
-SET(LIBRARY_NAME vtkSurface)
-SET(LIBRARY_NAME_BUILD_TREE_CONFIG ${CMAKE_BINARY_DIR})
-# Installation
-# Headers
-INSTALL_FILES(/include/${LIBRARY_NAME} "\\.h$")
-# Binary
-INSTALL_TARGETS(/lib ${LIBRARY_NAME})
-SET(INSTALL_LIBRARY_FILES_DIR ${CMAKE_SOURCE_DIR}/CMake)
-INCLUDE(../CMake/InstallLibrary.cmake)
-#-----------------------------------------------------------------------------

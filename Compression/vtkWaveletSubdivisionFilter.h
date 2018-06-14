@@ -12,7 +12,6 @@
 #define __vtkWaveletSubdivisionFilter_h
 #include <vector>
 #include <math.h>
-#include <vtkPolyDataToPolyDataFilter.h>
 #include <vtkObjectFactory.h>
 #include <vtkDoubleArray.h> 
 #include <vtkCommand.h>
@@ -34,7 +33,7 @@
  *  simplification and reconstruction Class. It can process integer or
  *  double coordinates, handles compression.
  */
-class VTK_EXPORT vtkWaveletSubdivisionFilter : public vtkPolyDataToPolyDataFilter 
+class VTK_EXPORT vtkWaveletSubdivisionFilter : public vtkObject
 {
 	class contour_element
 	{
@@ -86,7 +85,7 @@ public:
 	int GeometryPrediction;
 
 	static vtkWaveletSubdivisionFilter *New();
-	vtkTypeMacro(vtkWaveletSubdivisionFilter,vtkPolyDataToPolyDataFilter);
+	vtkTypeMacro(vtkWaveletSubdivisionFilter,vtkObject);
 
 
 

@@ -844,7 +844,7 @@ void vtkMultiresolutionIOSeqII::Decode(int frameindex, int mode)
 	vtkPLYWriter *Writer=vtkPLYWriter::New();
 	Writer->SetFileName(outputfilename);
 	Writer->SetFileTypeToASCII();
-	Writer->SetInput(this->GetOutput());
+	Writer->SetInputData(this->GetOutput());
 	Writer->Write();
 	Writer->Delete();
    
@@ -928,7 +928,7 @@ void vtkMultiresolutionIOSeqII::Decode(int frameindex, int mode)
       vtkPLYWriter *Writer=vtkPLYWriter::New();
 	   Writer->SetFileName(outputfilename);
       Writer->SetFileTypeToASCII();
-	   Writer->SetInput(this->Filters[j]->GetOutput());
+	   Writer->SetInputData(this->Filters[j]->GetOutput());
 	   Writer->Write();
 	   Writer->Delete();
    }

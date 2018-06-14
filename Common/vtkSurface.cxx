@@ -40,6 +40,71 @@
 #include "RenderWindow.h"
 #endif
 
+vtkSurface *vtkSurface::GetBiggestConnectedComponent()
+{
+	vtkIdListCollection *Collection=this->GetConnectedComponents();
+
+	// get the biggest component vertices
+	vtkIdType Id;
+	int Max=0;
+	for (int i=0;i<Collection->GetNumberOfItems();i++)
+	{
+		int Size=Collection->GetItem(i)->GetNumberOfIds();
+		if (Size>Max)
+		{
+			Max=Size;
+			Id=i;
+		}
+	}
+
+	vtkIdList *List=Collection->GetItem(Id);
+
+	vtkIdType *Ids=new vtkIdType[this->GetNumberOfPoints()];
+
+	for (vtkIdType i=0;i<this->GetNumberOfPoints();i++)
+		Ids[i]=-1;
+
+	vtkSurface *NewMesh=vtkSurface::New();
+	double Point[3];
+	for (vtkIdType i=0;i<List->GetNumberOfIds();i++)
+	{
+		vtkIdType PtId=List->GetId(i);
+		this->GetPoint(PtId,Point);
+		Ids[PtId]=NewMesh->AddVertex(Point);
+	}
+
+	int NumCells=this->GetNumberOfCells();
+	vtkIdType *pts, npts;
+	vtkIdType NewVertices[1000];
+
+	for (vtkIdType i=0;i<NumCells;i++)
+	{
+		this->GetCellPoints(i,npts, pts);
+		bool keep=true;
+		for (int j=0;j<npts;j++)
+			if (Ids[pts[j]]<0)
+				keep=false;
+
+		if (keep)
+		{
+			for (int j=0;j<npts;j++)
+			{
+				vtkIdType NewVertex=Ids[pts[j]];
+				if (NewVertex<0)
+				{
+					cout<<"Error in GetBiggestConnectedComponent()"<<endl;
+					exit(1);
+				}
+				NewVertices[j]=NewVertex;
+			}
+			NewMesh->AddPolygon(npts,NewVertices);
+		}
+	}
+
+	delete [] Ids;
+	return (NewMesh);
+}
+
 vtkSurface* vtkSurface::CleanMemory()
 {
 	vtkIdType NumberOfPoints=this->GetNumberOfPoints();
@@ -49,7 +114,7 @@ vtkSurface* vtkSurface::CleanMemory()
 	// Clean the Points
 	for (vtkIdType Id=0;Id<NumberOfPoints;Id++)
 	{
-		if (this->IsVertexActive(Id)==1)
+		if (this->GetValence(Id)!=0)
 		{
 			double Point[3];
 			this->GetPoint(Id,Point);
@@ -82,7 +147,7 @@ void vtkSurface::EnsureOutwardsNormals()
 {
 	vtkVolumeProperties *Volume=vtkVolumeProperties::New();
 	
-	Volume->SetInput(this);
+	Volume->SetInputData(this);
 	if (Volume->GetSignedVolume()<0)
 		this->SwitchOrientation();
 	Volume->Delete();
@@ -667,7 +732,7 @@ void vtkSurface::GetMeshProperties(std::stringstream &stream)
 	if (NumberOfEmptySlots)
 		stream<<NumberOfEmptySlots<<" edges cells are not used (not active)"<<endl;
 
-	vtkIdListCollection *Components=this->GetConnectedComponnents();
+	vtkIdListCollection *Components=this->GetConnectedComponents();
 	stream<<"The mesh has "<<Components->GetNumberOfItems()<<" connected components"<<endl;
     this->DeleteConnectedComponents();
 
@@ -821,7 +886,7 @@ vtkSurface* vtkSurface::CleanConnectivity(double tolerance)
 
 	// Here we merge the points within the relative tolerance together
 	vtkCleanPolyData *Cleaner=vtkCleanPolyData::New();
-	Cleaner->SetInput(this);
+	Cleaner->SetInputData(this);
 	Cleaner->SetTolerance(tolerance*BBoxDiag);
 	Cleaner->Update();
 
@@ -833,10 +898,10 @@ vtkSurface* vtkSurface::CleanConnectivity(double tolerance)
 	// Here is the delaunay triangulation of the resulting points
 
 	vtkDelaunay3D *Delaunay=vtkDelaunay3D::New();
-	Delaunay->SetInput(CleanedMesh);
+	Delaunay->SetInputData(CleanedMesh);
 
 	vtkIdListCollection *Components;
-	Components=CleanedMesh->GetConnectedComponnents();
+	Components=CleanedMesh->GetConnectedComponents();
 	NumberOfComponents=Components->GetNumberOfItems();
 	Delaunay->SetDebug(0);
 
@@ -964,14 +1029,14 @@ vtkSurface* vtkSurface::CleanConnectivity(double tolerance)
 #ifdef 	DISPLAYMESHCLEANING
 	RenderWindow *Window=RenderWindow::New();
 	Window->SetInputEdges(EdgesP);
-	Window->SetInput(this);
+	Window->SetInputData(this);
 	Window->Render();
 	Window->SetWindowName("1");
 	Window->Interact();
 
 	RenderWindow *Window2=RenderWindow::New();
-	Window2->SetInputEdges(EdgesP2);
-	Window2->SetInput(this);
+	Window2->SetInputData(EdgesP2);
+	Window2->SetInputData(this);
 	Window2->Render();
 	Window2->SetWindowName("2");
 	Window2->AttachToRenderWindow(Window);
@@ -979,7 +1044,7 @@ vtkSurface* vtkSurface::CleanConnectivity(double tolerance)
 
 
 	RenderWindow *Window3=RenderWindow::New();
-	Window3->SetInput(CleanedMesh);
+	Window3->SetInputData(CleanedMesh);
 	Window3->DisplayInputEdges();
 	Window3->Render();
 	Window3->SetWindowName("3");
@@ -1006,7 +1071,7 @@ vtkSurface* vtkSurface::CleanConnectivity(double tolerance)
 
 // Compute the connected components of the mesh (It is based on vertices and edges
 // So it works also with non manifold meshes)
-vtkIdListCollection* vtkSurface::GetConnectedComponnents()
+vtkIdListCollection* vtkSurface::GetConnectedComponents()
 {
 
 
@@ -1032,7 +1097,7 @@ vtkIdListCollection* vtkSurface::GetConnectedComponnents()
 			// a new component is detected
 			VQueue.push(i);
 			Component=vtkIdList::New();
-			Component->Allocate(this->GetNumberOfPoints());
+//			Component->Allocate(this->GetNumberOfPoints());
 
 			while(VQueue.size())
 			{
@@ -1759,6 +1824,7 @@ void vtkSurface::QuantizeCoordinates(int q)
 		p[2] = floor( (p[2]-zmin) * factor + 0.5 );
 		this->Points->SetPoint(i,p);
 	}
+	this->Modified();
 }
 // ****************************************************************
 // ****************************************************************
@@ -1797,6 +1863,33 @@ void vtkSurface::QuantizeCoordinates(double Factor, double Tx, double Ty, double
 		this->Points->SetPoint(i,p);
 	}
 }
+
+void vtkSurface::WriteToFile (const char *FileName)
+{
+	char filename[500];
+
+	strcpy(filename,FileName);
+	if (filename != NULL) {
+		char *p;
+		for (p = filename; *p; ++p)
+			*p = tolower(*p);
+	}
+
+	if (strstr(filename,".vtk") != NULL) {
+		vtkPolyDataWriter *Writer = vtkPolyDataWriter::New();
+		Writer->SetInputData(this);
+		Writer->SetFileName(FileName);
+		Writer->Write();
+	}
+
+	if (strstr(filename,".ply") != NULL) {
+		vtkPLYWriter *Writer = vtkPLYWriter::New();
+		Writer->SetInputData(this);
+		Writer->SetFileName(FileName);
+		Writer->Write();
+	}
+}
+
 // ****************************************************************
 // ****************************************************************
 void vtkSurface::CreateFromFile(const char *FileName)

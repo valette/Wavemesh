@@ -16,7 +16,6 @@ Auteurs:   Sebastien Valette
 
 #include <list>
 
-#include <vtkPolyDataSource.h>
 #include <vtkPolyDataMapper.h>
 #include <vtkPolyData.h>
 #include <vtkPolyDataMapper.h>
@@ -34,7 +33,7 @@ Auteurs:   Sebastien Valette
 #define VTK_FILE_BYTE_ORDER_BIG_ENDIAN 0
 #define VTK_FILE_BYTE_ORDER_LITTLE_ENDIAN 1
 
-class VTK_EXPORT vtkMultiresolutionIO : public vtkPolyDataSource
+class VTK_EXPORT vtkMultiresolutionIO : public vtkObject
 {
 
 	struct WaveletCoefficientSet
@@ -63,7 +62,7 @@ class VTK_EXPORT vtkMultiresolutionIO : public vtkPolyDataSource
 	};
 public:
 	static vtkMultiresolutionIO *New();
-	vtkTypeMacro(vtkMultiresolutionIO,vtkPolyDataSource);
+	vtkTypeMacro(vtkMultiresolutionIO,vtkObject);
 
 
 	// Description:

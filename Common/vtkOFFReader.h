@@ -31,18 +31,18 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #ifndef __vtkOFFReader_h
 #define __vtkOFFReader_h
 
-#include <vtkPolyDataSource.h>
+#include <vtkPolyDataAlgorithm.h>
 #include <vtkPolyDataMapper.h>
 #include <vtkPolyData.h>
 
 #define VTK_FILE_BYTE_ORDER_BIG_ENDIAN 0
 #define VTK_FILE_BYTE_ORDER_LITTLE_ENDIAN 1
 
-class VTK_EXPORT vtkOFFReader : public vtkPolyDataSource
+class VTK_EXPORT vtkOFFReader : public vtkPolyDataAlgorithm
 {
 public:
   static vtkOFFReader *New();
-  vtkTypeMacro(vtkOFFReader,vtkPolyDataSource);
+  vtkTypeMacro(vtkOFFReader,vtkPolyDataAlgorithm);
 
   // Description:
   // Specify file name.

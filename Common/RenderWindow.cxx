@@ -4,6 +4,7 @@
 * Author : Sebastien Valette
 *
 *  This software is governed by the GPL license (see License.txt)
+
 * ------------------------------------------------------------------------ */  
 
 #include <vtkObjectFactory.h>
@@ -42,7 +43,6 @@
 #include <vtkTubeFilter.h>
 #include <vtkTextProperty.h>
 #include <vtkVRMLExporter.h>
-
 
 #include "RenderWindow.h"
 #include "vtkSurfaceIterators.h"
@@ -165,7 +165,7 @@ public:
 		case '7':
 		{
 			vtkPolyDataWriter * SWriter = vtkPolyDataWriter::New ();
-			SWriter->SetInput (this->Window->GetInput ());
+			SWriter->SetInputData (this->Window->GetInput ());
 			SWriter->SetFileName ("mesh.vtk");
 			SWriter->Write ();
 			SWriter->Delete ();
@@ -183,7 +183,7 @@ public:
 		case '9':
 		{
 			vtkSTLWriter * SWriter = vtkSTLWriter::New ();
-			SWriter->SetInput (this->Window->GetInput ());
+			SWriter->SetInputData (this->Window->GetInput ());
 			SWriter->SetFileName ("mesh.stl");
 			SWriter->Write ();
 			SWriter->Delete ();
@@ -192,7 +192,7 @@ public:
 		case '0':
 		{
 			vtkPLYWriter * Writer = vtkPLYWriter::New ();
-			Writer->SetInput (this->Window->GetInput ());
+			Writer->SetInputData (this->Window->GetInput ());
 			Writer->SetFileName ("mesh.ply");
 			Writer->Write ();
 			Writer->Delete ();
@@ -206,7 +206,7 @@ public:
 			Writer->Write ();
 			Writer->Delete ();
 			return;
-		}		
+		}
 		case '+':
 		{
 			if (this->Window->GetEdgesActor())
@@ -365,9 +365,9 @@ int RenderWindow :: LoadCamera(const char *filename)
 void RenderWindow::EnableNormalMap()
 {
 	vtkPolyDataNormals *Normals = vtkPolyDataNormals::New ();
-	Normals->SetInput (this->Input);
+	Normals->SetInputData (this->Input);
 	Normals->SetFeatureAngle (60);
-	this->SetInput (Normals->GetOutput ());		
+	this->SetInputData (Normals->GetOutput ());		
 	Normals->Delete();
 	this->Render();
 }
@@ -451,7 +451,7 @@ RenderWindow::SetText (const char *text)
 	}
 }
 
-vtkActor* RenderWindow::SetInput (vtkPolyData * Input)
+vtkActor* RenderWindow::SetInputData (vtkPolyData * Input)
 {
 	vtkPolyDataMapper *Mapper=(vtkPolyDataMapper *) this->MeshActor->GetMapper();
 	
@@ -459,17 +459,17 @@ vtkActor* RenderWindow::SetInput (vtkPolyData * Input)
 	{
 		Mapper=vtkPolyDataMapper::New();		
 		Mapper->SetResolveCoincidentTopologyToPolygonOffset ();
-		Mapper->ImmediateModeRenderingOn ();
+		if (this->ImmediateMode)
+			Mapper->ImmediateModeRenderingOn ();
 		this->MeshActor->SetMapper(Mapper);
 		Mapper->Delete();
 	}
-	Mapper->SetInput(Input);
+	Mapper->SetInputData(Input);
 	
 	if (this->lut)
 		Mapper->SetLookupTable (this->lut);
 	
 	this->Input = Input;
-	this->SInput=0;
 
 //	this->MeshActor->GetProperty()->SetDiffuse(0.5);
 //	this->MeshActor->GetProperty()->SetSpecular(0.5);
@@ -480,13 +480,12 @@ vtkActor* RenderWindow::SetInput (vtkPolyData * Input)
 	return (MeshActor);
 }
 
-vtkActor* RenderWindow::SetInput (vtkSurface * Input)
+vtkActor* RenderWindow::SetInputData (vtkSurface * Input)
 {
-	if (!Input)
+	if (Input==0)
 		return(0);
-
 	this->SInput = Input;
-	return (this->SetInput((vtkPolyData *)Input));
+	return (this->SetInputData((vtkPolyData *)Input));
 }
 
 void
@@ -525,7 +524,7 @@ RenderWindow::Capture (const char *filename)
 	if (terminaison != NULL)
 	{
 		vtkPostScriptWriter *Writer = vtkPostScriptWriter::New ();
-		Writer->SetInput (Capture->GetOutput ());
+		Writer->SetInputData (Capture->GetOutput ());
 		Writer->SetFileName (filename);
 		Writer->Write ();
 		Writer->Delete ();
@@ -535,7 +534,7 @@ RenderWindow::Capture (const char *filename)
 	if (terminaison != NULL)
 	{
 		vtkBMPWriter *Writer = vtkBMPWriter::New ();
-		Writer->SetInput (Capture->GetOutput ());
+		Writer->SetInputData (Capture->GetOutput ());
 		Writer->SetFileName (filename);
 		Writer->Write ();
 		Writer->Delete ();
@@ -545,7 +544,7 @@ RenderWindow::Capture (const char *filename)
 	if (terminaison != NULL)
 	{
 		vtkPNGWriter *Writer = vtkPNGWriter::New ();
-		Writer->SetInput (Capture->GetOutput ());
+		Writer->SetInputData (Capture->GetOutput ());
 		Writer->SetFileName (filename);
 		Writer->Write ();
 		Writer->Delete ();
@@ -555,7 +554,7 @@ RenderWindow::Capture (const char *filename)
 	if (terminaison != NULL)
 	{
 		vtkJPEGWriter *Writer = vtkJPEGWriter::New ();
-		Writer->SetInput (Capture->GetOutput ());
+		Writer->SetInputData (Capture->GetOutput ());
 		Writer->SetFileName (filename);
 		Writer->SetQuality (85);
 		Writer->Write ();
@@ -709,10 +708,10 @@ void RenderWindow::HighLightEdges(vtkIdList *Edges, double Radius)
 		vtkTubeFilter *Tube=vtkTubeFilter::New();
 		Tube->SetRadius(Radius);
 		Tube->SetNumberOfSides(20);
-		Tube->SetInput(EdgesP);
+		Tube->SetInputData(EdgesP);
 
 		vtkPolyDataMapper* mapper = vtkPolyDataMapper::New( );
-		mapper->SetInput( Tube->GetOutput( ) );
+		mapper->SetInputData( Tube->GetOutput( ) );
 
 		if( !this->HighlightedEdgesActor )
 			HighlightedEdgesActor = vtkActor::New( );
@@ -750,18 +749,18 @@ void RenderWindow::HighLightVertices(vtkIdList *Vertices, double Radius)
 
 		vtkSphereSource* s_sphere = vtkSphereSource::New( );
 		s_sphere->SetRadius( Radius );
-		double Res=20;
+		int Res=20;
 		s_sphere->SetThetaResolution(Res);
 		s_sphere->SetPhiResolution(Res);
 		s_sphere->Update( );
 
 		vtkGlyph3D* glyph = vtkGlyph3D::New( );
-		glyph->SetInput( ps );
-		glyph->SetSource( s_sphere->GetOutput( ) );
+		glyph->SetInputData( ps );
+		glyph->SetSourceData( s_sphere->GetOutput( ) );
 		glyph->Update( );
 
 		vtkPolyDataMapper* mapper = vtkPolyDataMapper::New( );
-		mapper->SetInput( glyph->GetOutput( ) );
+		mapper->SetInputData( glyph->GetOutput( ) );
 
 		if( !this->HighlightedVerticesActor )
 			HighlightedVerticesActor = vtkActor::New( );
@@ -786,12 +785,20 @@ void RenderWindow::HighLightVertices(vtkIdList *Vertices, double Radius)
 
 void RenderWindow::DisplayNonManifoldVertices( double Radius )
 {
+	if (this->SInput==0)
+	{
+		cout<<"Warning : trying to display non manifold vertices does not work for vtkPolyData inputs"<<endl;
+		cout<<"Use vtkSurface to use this feature"<<endl;
+		return;
+	}
+
 	vtkIdList *Vertices=vtkIdList::New();
     for( vtkIdType i = 0; i < this->SInput->GetNumberOfPoints( ); i++ )
     {
         if( !this->SInput->IsVertexManifold( i ) )
         	Vertices->InsertNextId(i);
     }
+    this->HighLightVertices(Vertices,Radius);
     Vertices->Delete();
 }
 
@@ -799,11 +806,12 @@ vtkActor *RenderWindow::AddPolyData (vtkPolyData * Input)
 {
 
 	vtkPolyDataMapper *mapper = vtkPolyDataMapper::New ();
-	mapper->ImmediateModeRenderingOn ();
+	if (this->ImmediateMode)
+		mapper->ImmediateModeRenderingOn ();
 	mapper->SetResolveCoincidentTopologyToPolygonOffset ();
 //	mapper->SetResolveCoincidentTopologyToShiftZBuffer();
 
-	mapper->SetInput (Input);
+	mapper->SetInputData (Input);
 
 	vtkActor *Mactor = vtkActor::New ();
 	Mactor->SetMapper (mapper);
@@ -889,12 +897,13 @@ RenderWindow::SetInputEdges (vtkPolyData * Edges)
 	
 		vtkPolyDataMapper *EdgesMapper = vtkPolyDataMapper::New ();
 		EdgesMapper->SetResolveCoincidentTopologyToPolygonOffset ();
-		EdgesMapper->ImmediateModeRenderingOn ();
+		if (this->ImmediateMode)
+			EdgesMapper->ImmediateModeRenderingOn ();
 
 		this->EdgesActor = vtkActor::New ();
 		vtkIntArray *EdgesColor = vtkIntArray::New ();
 
-		EdgesMapper->SetInput (Edges);
+		EdgesMapper->SetInputData (Edges);
 		int i;
 
 		EdgesColor->SetNumberOfValues (Edges->GetNumberOfCells ());
@@ -1001,6 +1010,12 @@ RenderWindow::SetDisplayIdsOff ()
 	this->Render ();
 }
 
+
+void RenderWindow::SetImmediateMode(bool Used)
+{
+	this->ImmediateMode=Used;
+}
+
 void
 RenderWindow::SetDisplayIdsOn ()
 {
@@ -1042,14 +1057,14 @@ RenderWindow::SetDisplayIdsOn ()
 		selectRect->SetLines (rect);
 
 		vtkPolyDataMapper2D *rectMapper = vtkPolyDataMapper2D::New ();
-		rectMapper->SetInput (selectRect);
+		rectMapper->SetInputData (selectRect);
 
 		rectActor->SetMapper (rectMapper);
 		vtkDataSet *DataSet = this->GetMeshActor()->GetMapper()->GetInput();
 
 		//Generate ids for labeling
 		vtkIdFilter *ids = vtkIdFilter::New ();
-		ids->SetInput (DataSet);
+		ids->SetInputData (DataSet);
 		ids->PointIdsOn ();
 		ids->CellIdsOn ();
 		ids->FieldDataOn ();
@@ -1058,14 +1073,14 @@ RenderWindow::SetDisplayIdsOn ()
 		//Create labels for points
 		vtkSelectVisiblePoints *visPts =
 			vtkSelectVisiblePoints::New ();
-		visPts->SetInput (ids->GetOutput ());
+		visPts->SetInputData (ids->GetOutput ());
 		visPts->SetRenderer (Renderer);
 		visPts->SelectionWindowOn ();
 
 		visPts->SetSelection (xmin, xmax, ymin, ymax);
 		visPts->SelectInvisibleOff();
 		vtkLabeledDataMapper *ldm = vtkLabeledDataMapper::New ();
-		ldm->SetInput (visPts->GetOutput ());
+		ldm->SetInputData (visPts->GetOutput ());
 //		ldm->SetLabelModeToLabelIds ();
 		ldm->SetLabelModeToLabelFieldData ();
 
@@ -1073,11 +1088,11 @@ RenderWindow::SetDisplayIdsOn ()
 
 		//Create labels for cells
 		vtkCellCenters *cc = vtkCellCenters::New ();
-		cc->SetInput (ids->GetOutput ());
+		cc->SetInputData (ids->GetOutput ());
 
 		vtkSelectVisiblePoints *visCells =
 			vtkSelectVisiblePoints::New ();
-		visCells->SetInput (cc->GetOutput ());
+		visCells->SetInputData (cc->GetOutput ());
 		visCells->SetRenderer (this->GetMeshRenderer());
 		visCells->SelectInvisibleOff();
 		visCells->SelectionWindowOn ();
@@ -1085,7 +1100,7 @@ RenderWindow::SetDisplayIdsOn ()
 
 		vtkLabeledDataMapper *cellMapper =
 			vtkLabeledDataMapper::New ();
-		cellMapper->SetInput (visCells->GetOutput ());
+		cellMapper->SetInputData (visCells->GetOutput ());
 //		cellMapper->SetLabelFormat ("%g");
 		cellMapper->SetLabelModeToLabelFieldData ();
 //		cellMapper->SetLabelModeToLabelIds ();
@@ -1165,6 +1180,7 @@ RenderWindow::RenderWindow () : HighlightedVerticesActor( 0 ),HighlightedEdgesAc
 	this->cellLabels = 0;
 	this->NumberOfInteractionsToSkip=0;
 	this->TextActor=0;
+	this->ImmediateMode=true;
 }
 
 RenderWindow::~RenderWindow ()	//Destructeur

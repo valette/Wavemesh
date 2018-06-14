@@ -220,7 +220,6 @@ void vtkWaveletSubdivisionFilter::ReadCoefficients()
 
 void vtkWaveletSubdivisionFilter::SetInput(vtkSurface *input)
 {
-	this->vtkProcessObject::SetNthInput(0, input);
 	this->SubdivisionInput=input;
 }
 
@@ -341,7 +340,7 @@ void vtkWaveletSubdivisionFilter::SolveInverseProblem (vtkIdType initial_face)
 			VerticesMesh->InsertNextCell(VTK_VERTEX,1,&i);
 		}
 
-		Window->SetInput(CopyMesh);
+		Window->SetInputData(CopyMesh);
 		Window->SetLookupTable(lut);
 		Window->AddPolyData(VerticesMesh);
 		Window->Render();
@@ -359,9 +358,7 @@ void vtkWaveletSubdivisionFilter::SolveInverseProblem (vtkIdType initial_face)
 // Specify the input data or filter.
 vtkPolyData *vtkWaveletSubdivisionFilter::GetInput()
 {
-	if (this->NumberOfInputs < 1) return NULL;
-
-	return (vtkSurface *)(this->Inputs[0]);
+	return this->SubdivisionInput;
 }
 
 void vtkWaveletSubdivisionFilter::ComputeFastLiftingCoeff()
@@ -374,10 +371,10 @@ void vtkWaveletSubdivisionFilter::ComputeFastLiftingCoeff()
 	this->LiftNum=(int) N1;
 }
 
-void vtkWaveletSubdivisionFilter::ComputeVertexContribution(vtkIdType p1,vtkIdType p2, vtkFloatingPointType *V1)
+void vtkWaveletSubdivisionFilter::ComputeVertexContribution(vtkIdType p1,vtkIdType p2, double *V1)
 {
 	vtkIdType Edge,v1,v2,f1,f2;
-	vtkFloatingPointType Vertex[3];
+	double Vertex[3];
 	int Valence;
 
 	vtkPoints *Points=this->SubdivisionInput->GetPoints();
@@ -474,7 +471,7 @@ void vtkWaveletSubdivisionFilter::ComputeVertexContribution(vtkIdType p1,vtkIdTy
 void vtkWaveletSubdivisionFilter::ComputeVertexContribution2(vtkIdType p1,vtkIdType p2, double *V1)
 {
 	vtkIdType Edge,v1,v2,f1,f2;
-	vtkFloatingPointType Vertex[3];	
+	double Vertex[3];
 	int Valence;
 
 	vtkPoints *Points=this->SubdivisionInput->GetPoints();
@@ -585,9 +582,9 @@ void vtkWaveletSubdivisionFilter::ComputeVertexContribution2(vtkIdType p1,vtkIdT
 	}
 }
 
-void vtkWaveletSubdivisionFilter::ComputeNewVertexCoordinates(vtkIdType p1,vtkIdType p2, vtkFloatingPointType *V1)
+void vtkWaveletSubdivisionFilter::ComputeNewVertexCoordinates(vtkIdType p1,vtkIdType p2, double *V1)
 {
-	vtkFloatingPointType P1[3], P2[3], Vertex[3];		
+	double P1[3], P2[3], Vertex[3];
 
 	int Val1,Val2,Val;
 	int approach=1;
@@ -716,8 +713,8 @@ void vtkWaveletSubdivisionFilter::Reconstruct()
 {
 	vtkIdType PtId,p1,p2,NNewPoints,NOldPoints;
 	double *Wavelet;
-	vtkFloatingPointType P1[3], P2[3], Po1[3], Po2[3], V1[3];		
-	vtkFloatingPointType V[3];
+	double P1[3], P2[3], Po1[3], Po2[3], V1[3];
+	double V[3];
 	int *IntWavelet;
 
 	vtkPoints *NewPoints=this->SubdivisionOutput->GetPoints();
@@ -734,7 +731,7 @@ void vtkWaveletSubdivisionFilter::Reconstruct()
 	{
 		Wavelets=vtkDoubleArray::New();
 		Wavelets->DeepCopy(this->Wavelets);
-		vtkFloatingPointType Vertex[3];
+		double Vertex[3];
 
 		for (PtId=NOldPoints;PtId<NNewPoints;PtId++)
 		{
@@ -850,16 +847,16 @@ void vtkWaveletSubdivisionFilter::Reconstruct()
 				p2=this->vertices[PtId].parent2;
 
 				Wavelet=Wavelets->GetPointer((PtId-NOldPoints)*3);
-				NewPoints->GetPoint(p1, Po1);				
-				NewPoints->GetPoint(p2, Po2);	
+				NewPoints->GetPoint(p1, Po1);
+				NewPoints->GetPoint(p2, Po2);
 
-				Po1[0]-=(vtkFloatingPointType)Wavelet[0]*k;
-				Po1[1]-=(vtkFloatingPointType)Wavelet[1]*k;
-				Po1[2]-=(vtkFloatingPointType)Wavelet[2]*k;	
+				Po1[0]-=(double)Wavelet[0]*k;
+				Po1[1]-=(double)Wavelet[1]*k;
+				Po1[2]-=(double)Wavelet[2]*k;
 
-				Po2[0]-=(vtkFloatingPointType)Wavelet[0]*k;
-				Po2[1]-=(vtkFloatingPointType)Wavelet[1]*k;
-				Po2[2]-=(vtkFloatingPointType)Wavelet[2]*k;
+				Po2[0]-=(double)Wavelet[0]*k;
+				Po2[1]-=(double)Wavelet[1]*k;
+				Po2[2]-=(double)Wavelet[2]*k;
 
 				NewPoints->SetPoint(p1, Po1);				
 				NewPoints->SetPoint(p2, Po2);	
@@ -899,32 +896,32 @@ void vtkWaveletSubdivisionFilter::Reconstruct()
 				p2=this->vertices[PtId].parent2;
 
 				IntWavelet=IntegerWavelets->GetPointer((PtId-NOldPoints)*3);
-				NewPoints->GetPoint(p1, Po1);				
-				NewPoints->GetPoint(p2, Po2);	
+				NewPoints->GetPoint(p1, Po1);
+				NewPoints->GetPoint(p2, Po2);
 
-				Po1[0]-=(vtkFloatingPointType)IntWavelet[0]*k;
-				Po1[1]-=(vtkFloatingPointType)IntWavelet[1]*k;
-				Po1[2]-=(vtkFloatingPointType)IntWavelet[2]*k;	
+				Po1[0]-=(double)IntWavelet[0]*k;
+				Po1[1]-=(double)IntWavelet[1]*k;
+				Po1[2]-=(double)IntWavelet[2]*k;
 
-				Po2[0]-=(vtkFloatingPointType)IntWavelet[0]*k;
-				Po2[1]-=(vtkFloatingPointType)IntWavelet[1]*k;
-				Po2[2]-=(vtkFloatingPointType)IntWavelet[2]*k;
+				Po2[0]-=(double)IntWavelet[0]*k;
+				Po2[1]-=(double)IntWavelet[1]*k;
+				Po2[2]-=(double)IntWavelet[2]*k;
 
-				NewPoints->SetPoint(p1, Po1);				
-				NewPoints->SetPoint(p2, Po2);	
+				NewPoints->SetPoint(p1, Po1);
+				NewPoints->SetPoint(p2, Po2);
 
 			}
 
 			for (PtId=0;PtId<NOldPoints;PtId++)
 			{
-				OldPoints->GetPoint(PtId, P1);					
-				NewPoints->GetPoint(PtId, Po1);		
+				OldPoints->GetPoint(PtId, P1);
+				NewPoints->GetPoint(PtId, Po1);
 
-				Po1[0]=(vtkFloatingPointType)ceil(Po1[0])+P1[0];
-				Po1[1]=(vtkFloatingPointType)ceil(Po1[1])+P1[1];
-				Po1[2]=(vtkFloatingPointType)ceil(Po1[2])+P1[2];
+				Po1[0]=(double)ceil(Po1[0])+P1[0];
+				Po1[1]=(double)ceil(Po1[1])+P1[1];
+				Po1[2]=(double)ceil(Po1[2])+P1[2];
 
-				NewPoints->SetPoint(PtId, Po1);		
+				NewPoints->SetPoint(PtId, Po1);
 
 			}
 		}
@@ -938,9 +935,9 @@ void vtkWaveletSubdivisionFilter::Reconstruct()
 			p1=this->vertices[PtId].parent1;
 			p2=this->vertices[PtId].parent2;
 
-			NewPoints->GetPoint(p1, P1);	
-			NewPoints->GetPoint(p2, P2);	
-			NewPoints->GetPoint(PtId, V1);	
+			NewPoints->GetPoint(p1, P1);
+			NewPoints->GetPoint(p2, P2);
+			NewPoints->GetPoint(PtId, V1);
 
 
 			V1[0]=0.5*(P1[0]+P2[0]);
@@ -953,7 +950,7 @@ void vtkWaveletSubdivisionFilter::Reconstruct()
 			V1[1]+=Wavelet[1];
 			V1[2]+=Wavelet[2];
 
-			NewPoints->SetPoint(PtId, V1);	
+			NewPoints->SetPoint(PtId, V1);
 
 		}
 	}
@@ -1174,12 +1171,12 @@ void vtkWaveletSubdivisionFilter::Approximate()
 
 			for (PtId=0;PtId<NOldPoints;PtId++)
 			{
-				NewPoints->GetPoint(PtId, P1);	
-				OldPoints->GetPoint(PtId, Po1);	
+				NewPoints->GetPoint(PtId, P1);
+				OldPoints->GetPoint(PtId, Po1);
 
-				Po1[0]=(vtkFloatingPointType)floor(Po1[0])+P1[0];
-				Po1[1]=(vtkFloatingPointType)floor(Po1[1])+P1[1];
-				Po1[2]=(vtkFloatingPointType)floor(Po1[2])+P1[2];
+				Po1[0]=(double)floor(Po1[0])+P1[0];
+				Po1[1]=(double)floor(Po1[1])+P1[1];
+				Po1[2]=(double)floor(Po1[2])+P1[2];
 
 				NewPoints->SetPoint(PtId, P1);	
 				OldPoints->SetPoint(PtId, Po1);	
@@ -1239,7 +1236,7 @@ void vtkWaveletSubdivisionFilter::Approximate()
 	// Lifting dual (prédiction des coefficients d'ondelette)
 	if (this->GeometryPrediction==1)
 	{
-		vtkFloatingPointType Vertex[3];
+		double Vertex[3];
 		if (this->ArithmeticType==0)
 		{
 			for (PtId=NOldPoints;PtId<NNewPoints;PtId++)
@@ -2633,7 +2630,7 @@ void vtkWaveletSubdivisionFilter::ConquerEdge(vtkIdType v1,vtkIdType v2,vtkIdTyp
 
 int vtkWaveletSubdivisionFilter::AddFace(vtkIdType v1,vtkIdType v2,vtkIdType v3,vtkIdType& edge1,vtkIdType& edge2,vtkIdType& edge3)
 {
-	vtkFloatingPointType point[3];
+	double point[3];
 	vtkIdType face,nv1,nv2,nv3;
 
 	this->MergeInput->GetPoints()->GetPoint(v1,point);

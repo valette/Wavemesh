@@ -28,6 +28,8 @@
 #include <vtkEdgeTable.h>
 #include <vtkCommand.h>
 #include <vtkIdListCollection.h>
+#include <vtkPolyDataWriter.h>
+#include <vtkPLYWriter.h>
 #include "vtkSurfaceBase.h"
 
 
@@ -69,7 +71,7 @@ public:
 	void DisplayMeshProperties();
 	
 	/// Switch the whole mesh orientation if its normals are not directed outwards.
-	/// This is done by computine the signed volume of the mesh
+	/// This is done by computing the signed volume of the mesh
 	void EnsureOutwardsNormals();
 
 	/// Computes the normal of the given triangle
@@ -125,9 +127,11 @@ public:
 	void DeleteEdgeLengths();
 
 	/// Computes the connected components of the mesh
-	vtkIdListCollection* GetConnectedComponnents();
+	vtkIdListCollection* GetConnectedComponents();
 	void DeleteConnectedComponents();
 
+	/// returns a vtkSurface made of the biggest connected component
+	vtkSurface *GetBiggestConnectedComponent();
 
    /// Computes the mesh minimal angle, average minimal angle, minimal triangle quality and average triangle quality
    /// usefull to give an objective quality criterion of the mesh
@@ -139,6 +143,10 @@ public:
    /// Creates the vtkSurface object by reading a mesh file.
    /// Supported file types : .wrl, .vtk and .ply
    void CreateFromFile (const char *FileName);
+
+   /// Saves the mesh
+   /// Supported file types : .vtk and .ply
+   void WriteToFile (const char *FileName);
 
    // The Constructor vtkSurface::New();
    static vtkSurface *New();

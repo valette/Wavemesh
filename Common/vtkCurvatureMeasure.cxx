@@ -23,16 +23,15 @@ email                :
 #include "vtkCurvatureMeasure.h"
 #include "vtkNeighbourhoodComputation.h"
 
-#define SIZE 1000
 #define DISPLAYINTERVAL 10000
 
 /// this class is made to compute curvature measure of a vtkIdList with polynomial fitting
 /// It was created to ease mumtithreading
 class vtkSinglePolynomialMeasure:public vtkObject
 {
-      public:
+public:
 
-	void SetInput (vtkSurface * Input)
+	void SetInputData (vtkSurface * Input)
 	{
 		this->Input = Input;
 	};
@@ -65,19 +64,18 @@ class vtkSinglePolynomialMeasure:public vtkObject
 	int NumberOfCellsWithSmallNeighbourhood;
 	int NumberOfBadMatrices;
 
+protected:
 
-      protected:
 	vtkSinglePolynomialMeasure ()
 	{
 		this->NumberOfBadMatrices = 0;
 		this->NumberOfCellsWithSmallNeighbourhood = 0;
+		this->MatricesSize=0;
+		this->AllocateMatrices(100);
+
 		for (i = 0; i < 6; i++)
 			Quadric[i] = new double;
-		for (i = 0; i < SIZE; i++)
-		{
-			VandermondeMatrix[i] = new double[6];
-			SecondMember[i] = new double;
-		}
+
 		A = new double *[2];
 		A[0] = new double[2];
 		A[1] = new double[2];
@@ -90,16 +88,13 @@ class vtkSinglePolynomialMeasure:public vtkObject
 		EigenVectors[1] = new double[2];
 
 	};
+
 	~vtkSinglePolynomialMeasure ()
 	{
 		for (i = 0; i < 6; i++)
 			delete Quadric[i];
 
-		for (i = 0; i < SIZE; i++)
-		{
-			delete[]VandermondeMatrix[i];
-			delete SecondMember[i];
-		}
+		this->FreeMatrices();
 
 		delete[]A[0];
 		delete[]A[1];
@@ -113,13 +108,46 @@ class vtkSinglePolynomialMeasure:public vtkObject
 		delete[]EigenValues;
 	};
 
-      private:
+private:
 
 	/// The input vtkSurface;
 	vtkSurface * Input;
 
-	double *VandermondeMatrix[SIZE];
-	double *SecondMember[SIZE];
+	void AllocateMatrices(int Size)
+	{
+		this->FreeMatrices();
+
+		SecondMember = new double * [Size];
+		VandermondeMatrix = new double * [Size];
+		for (i = 0; i < Size; i++)
+		{
+			VandermondeMatrix[i] = new double[6];
+			SecondMember[i]= new double;
+		}
+
+		this->MatricesSize=Size;
+	}
+
+	void FreeMatrices()
+	{
+		if (this->MatricesSize==0)
+			return;
+
+		for (i = 0; i < this->MatricesSize; i++)
+		{
+			delete [] VandermondeMatrix[i];
+			delete [] SecondMember[i];
+		}
+
+		delete [] VandermondeMatrix;
+		delete [] SecondMember;
+		this->MatricesSize=0;
+	}
+
+	int MatricesSize;
+
+	double **VandermondeMatrix;
+	double **SecondMember;
 	double *Quadric[6];
 	double **A, **B;
 	double Barycenter[3];
@@ -150,6 +178,9 @@ vtkSinglePolynomialMeasure::ComputeFitting (vtkIdList * FList,
 	Frame[0][0] = 0;
 	Frame[0][1] = 0;
 	Frame[0][2] = 0;
+
+	if (FList->GetNumberOfIds()>this->MatricesSize)
+		this->AllocateMatrices(FList->GetNumberOfIds());
 
 	// Compute mean normal, area and centroid of the region
 	for (j = 0; j < FList->GetNumberOfIds (); j++)
@@ -598,11 +629,11 @@ vtkCurvatureMeasure::ThreadedCurvatureComputation (void *arg)
 	vtkNeighbourhoodComputation *Neighbourhood =
 		vtkNeighbourhoodComputation::New ();
 	Neighbourhood->SetCellType (CurvatureMeasure->ElementsType);
-	Neighbourhood->SetInput (CurvatureMeasure->Input);
+	Neighbourhood->SetInputData (CurvatureMeasure->Input);
 
 	vtkSinglePolynomialMeasure *Measure =
 		vtkSinglePolynomialMeasure::New ();
-	Measure->SetInput (CurvatureMeasure->Input);
+	Measure->SetInputData (CurvatureMeasure->Input);
 
 	RingSize = CurvatureMeasure->RingSize;
 	DistanceMax = CurvatureMeasure->NeighbourhoodSize;
@@ -756,7 +787,7 @@ vtkCurvatureMeasure::GetCurvatureIndicator ()
 			Mesh2->GetCellData ()->SetScalars (0);
 		}
 
-		Window->SetInput (Mesh2);
+		Window->SetInputData (Mesh2);
 
 		vtkLookupTable *bwLut = vtkLookupTable::New ();
 		bwLut->SetTableRange (0, 1);
@@ -1140,7 +1171,7 @@ vtkCurvatureMeasure::vtkCurvatureMeasure ()
 	this->ComputeCurvatureInfoFlag = 1;
 	this->CellsCurvatureInfo = 0;
 	
-	this->StatisticsLock = vtkSimpleCriticalSection::New ();
+	this->StatisticsLock = new vtkSimpleCriticalSection();
 	this->Timer = vtkTimerLog::New ();
 	this->NumberOfBadMatrices = 0;
 	this->NumberOfCellsWithSmallNeighbourhood = 0;	
@@ -1148,7 +1179,7 @@ vtkCurvatureMeasure::vtkCurvatureMeasure ()
 
 vtkCurvatureMeasure::~vtkCurvatureMeasure ()
 {
-	this->StatisticsLock->Delete ();
+	delete this->StatisticsLock;
 	this->Timer->Delete ();
 	
 	if (this->CurvatureCollection)

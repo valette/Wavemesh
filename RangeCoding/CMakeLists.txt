@@ -12,5 +12,5 @@ INCLUDE_DIRECTORIES(
  vtkArithmeticCoderBase.cxx
  )
  
-TARGET_LINK_LIBRARIES(vtkRangeCoding vtkCommon)
+TARGET_LINK_LIBRARIES(vtkRangeCoding ${VTK_LIBRARIES})
 

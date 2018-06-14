@@ -10,34 +10,25 @@ INCLUDE_DIRECTORIES(
  ADD_LIBRARY(vtkWavemesh
  vtkArithmeticCoder.cxx
  vtkMultiresolutionIO.cxx
+ vtkMultiresolutionIOSeq.cxx
+ vtkMultiresolutionIOSeqII.cxx
  vtkSparseMatrix.cxx
  vtkWaveletSubdivisionFilter.cxx
-vtkMultiresolutionIOSeqII.cxx
  )
  
 
 # Set the added libraries
-SET(LIB_ADDED 
-vtkRangeCoding
-vtkSurface
-vtkCommon
-vtkFiltering
-vtkImaging
-vtkIO
-vtkRendering
-vtkHybrid
-)
+SET(LIB_ADDED vtkRangeCoding vtkSurface ${VTK_LIBRARIES})
 
 TARGET_LINK_LIBRARIES(vtkWavemesh ${LIB_ADDED})
 
 SET(WAVEMESH_EXAMPLES
-wavemesh
 SWA_TWA
+wavemesh
 DisplayWavelet
 )
 FOREACH(loop_var ${WAVEMESH_EXAMPLES})
 	ADD_EXECUTABLE(${loop_var} ${loop_var}.cxx)
-	TARGET_LINK_LIBRARIES(${loop_var} vtkSurface vtkWavemesh vtkRangeCoding
-	vtkCommon vtkFiltering vtkGraphics vtkImaging vtkIO vtkRendering vtkHybrid)
+	TARGET_LINK_LIBRARIES(${loop_var} vtkWavemesh ${LIB_ADDED})
 ENDFOREACH(loop_var)
 

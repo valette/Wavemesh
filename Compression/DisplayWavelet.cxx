@@ -77,7 +77,7 @@ int main( int argc, char *argv[] )
 	Filters[NumberOfFilters-1]->DisplayWavelet();
 	
 	RenderWindow *Window=RenderWindow::New();
-	Window->SetInput(Filters[NumberOfFilters-1]->GetOutput());
+	Window->SetInputData(Filters[NumberOfFilters-1]->GetOutput());
 	
 	Window->Render();
 	Window->Interact();

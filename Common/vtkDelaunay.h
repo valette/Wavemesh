@@ -37,7 +37,7 @@ public:
 	static vtkDelaunay *New();
 
 	// Sets the mesh to modify
-	void SetInput(vtkSurface *Input);
+	void SetInputData(vtkSurface *Input);
 
 	// This method flips the edges of the input mesh until all its edges meet the Delaunay criterion
 	void DelaunayConform();
@@ -55,7 +55,7 @@ public:
 	
 	// Derive these methods when you want to do additionnal operations when an edge is flipped
 	virtual void UpdateEdge(vtkIdType Edge){};
-	virtual bool IsEdgeFlippable(vtkIdType Edge){return (true);};
+	virtual bool IsEdgeFlippable(vtkIdType Edge);
 
 	static	double ComputeDelaunayConformingCriterion( vtkSurface *Mesh,const vtkIdType& Edge )
 	{

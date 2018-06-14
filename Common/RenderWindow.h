@@ -122,10 +122,10 @@ public:
 	void SetWindowName(const char *Name){this->renWin->SetWindowName(Name);};
 	
 	/// Sets the input PolyData
-	vtkActor* SetInput(vtkPolyData *Input);
+	vtkActor* SetInputData(vtkPolyData *Input);
 
 	/// Sets the input VtkSurface
-	vtkActor* SetInput(vtkSurface *Input);
+	vtkActor* SetInputData(vtkSurface *Input);
 
 	/// Returns the input mesh (Warning: its is returned as a vtkPolyData but it may be a vtkSurface!)
 	vtkPolyData *GetInput()
@@ -196,6 +196,9 @@ public:
 	// method to set the interactor style to allow additionnal function keys
 	virtual void SetCustomInteractorStyle();
 
+	// sets/unsets immediate mode (default : on)
+	void SetImmediateMode(bool Used);
+
 protected:
 
 	// The window
@@ -231,6 +234,8 @@ protected:
 	vtkActor2D *cellLabels;
 
 	vtkTextActor *TextActor;
+
+	bool ImmediateMode;
 
 	RenderWindow(); 
 	virtual ~RenderWindow();

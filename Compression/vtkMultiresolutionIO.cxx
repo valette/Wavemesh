@@ -923,7 +923,7 @@ void vtkMultiresolutionIO::DecodeProgressivePrecision()
 		cout<<"Final mesh: "<<this->SynthesisMeshes[0]->GetNumberOfCells()<<" faces"<<endl;
 	if (this->Display!=0)
 	{
-		this->MeshWindow->SetInput(this->SynthesisMeshes[0]);
+		this->MeshWindow->SetInputData(this->SynthesisMeshes[0]);
 		this->MeshWindow->Render();
 		this->MeshWindow->SetWindowName("Progressive precision reconstruction");
 		cout<<"Window interaction: presse 'e' key to exit from interaction"<<endl;
@@ -1179,7 +1179,7 @@ void vtkMultiresolutionIO::DecodeProgressivePrecision()
 			this->Reconstruct();
 			if (this->Display!=0)
 			{
-				this->MeshWindow->SetInput(this->SynthesisMeshes[0]);
+				this->MeshWindow->SetInputData(this->SynthesisMeshes[0]);
 				this->MeshWindow->Render();
 			}
 			if ((this->Display==2)||((BitPlane==this->NumberOfStartBitPlanes-1)&&(this->Display!=0)))
@@ -1197,7 +1197,7 @@ void vtkMultiresolutionIO::DecodeProgressivePrecision()
 					std::stringstream strfile;
 					strfile<<"Mesh"<<BitPlane<<".ply";
 					vtkPLYWriter *Writer=vtkPLYWriter::New();
-					Writer->SetInput(this->Filters[0]->GetOutput());
+					Writer->SetInputData(this->Filters[0]->GetOutput());
 					Writer->SetFileName(strfile.str().c_str());
 					Writer->Write();
 					Writer->Delete();
@@ -1305,7 +1305,7 @@ void vtkMultiresolutionIO::DecodeProgressiveResolution()
 
 	if (this->Display!=0)
 	{
-		this->MeshWindow->SetInput(this->SynthesisMeshes[this->NumberOfFilters]);
+		this->MeshWindow->SetInputData(this->SynthesisMeshes[this->NumberOfFilters]);
 		this->MeshWindow->Render();
 		this->MeshWindow->SetWindowName("Progressive resolution reconstruction");
 #if ( (VTK_MAJOR_VERSION >= 5))
@@ -1354,7 +1354,7 @@ void vtkMultiresolutionIO::DecodeProgressiveResolution()
 
 		if (this->Display!=0)
 		{
-			this->MeshWindow->SetInput(this->Filters[j]->GetOutput());
+			this->MeshWindow->SetInputData(this->Filters[j]->GetOutput());
 			this->MeshWindow->Render();
 
 #if ( (VTK_MAJOR_VERSION >= 5))
@@ -1392,7 +1392,7 @@ void vtkMultiresolutionIO::DecodeProgressiveResolution()
 	this->SynthesisMeshes[0]->Modified();
 	if (this->Display!=0)
 	{
-		this->MeshWindow->SetInput(this->SynthesisMeshes[0]);
+		this->MeshWindow->SetInputData(this->SynthesisMeshes[0]);
 		this->MeshWindow->Render();
 		cout<<"Window interaction: presse 'e' key to exit from interaction"<<endl;
 		this->MeshWindow->Interact();
@@ -1406,7 +1406,7 @@ void vtkMultiresolutionIO::DecodeProgressiveResolution()
 		{
 			vtkPLYWriter *Writer=vtkPLYWriter::New();
 			Writer->SetFileName("Mesh0.ply");
-			Writer->SetInput(this->Filters[this->NumberOfFilters-1]->GetSubdivisionInput());
+			Writer->SetInputData(this->Filters[this->NumberOfFilters-1]->GetSubdivisionInput());
 			Writer->Write();
 			Writer->Delete();
 		}
@@ -1427,7 +1427,7 @@ void vtkMultiresolutionIO::DecodeProgressiveResolution()
 				strfile<<"Mesh"<<this->NumberOfFilters-j<<".ply";
 				vtkPLYWriter *Writer=vtkPLYWriter::New();
 				Writer->SetFileName(strfile.str().c_str());
-				Writer->SetInput(this->Filters[j]->GetOutput());
+				Writer->SetInputData(this->Filters[j]->GetOutput());
 				Writer->Write();
 				Writer->Delete();
 			}
@@ -1594,7 +1594,7 @@ void vtkMultiresolutionIO::Analyse()
 	int i,j,revert;
 
 	this->AnalysisMeshes[0]=this->Input;
-	this->MeshWindow->SetInput(this->AnalysisMeshes[0]);
+	this->MeshWindow->SetInputData(this->AnalysisMeshes[0]);
 	if (this->Display!=0)
 	{
 		this->MeshWindow->Render();
@@ -1676,7 +1676,7 @@ void vtkMultiresolutionIO::Analyse()
 					this->AnalysisMeshes[i+1]->ComputeSharpVertices(this->EdgeAngleThreshold);
 					lut->SetHueRange(0.667,0.0);
 				}
-				this->MeshWindow->SetInput(this->AnalysisMeshes[i+1]);
+				this->MeshWindow->SetInputData(this->AnalysisMeshes[i+1]);
 				this->MeshWindow->Render();
 #if ( (VTK_MAJOR_VERSION >= 5))
 				start2=this->Timer->GetUniversalTime();
@@ -1738,7 +1738,7 @@ void vtkMultiresolutionIO::Synthetize()
 		this->SynthesisMeshes[j]=this->Filters[j]->GetOutput();
 		if (this->Display!=0)
 		{
-			this->MeshWindow->SetInput(this->Filters[j]->GetOutput());
+			this->MeshWindow->SetInputData(this->Filters[j]->GetOutput());
 			this->MeshWindow->Render();
 #if ( (VTK_MAJOR_VERSION >= 5))
 			start2=this->Timer->GetUniversalTime();
@@ -1756,7 +1756,7 @@ void vtkMultiresolutionIO::Synthetize()
 	}
 	if (this->Display!=0)
 	{
-		this->MeshWindow->SetInput(this->SynthesisMeshes[0]);
+		this->MeshWindow->SetInputData(this->SynthesisMeshes[0]);
 		this->MeshWindow->Render();
 		this->MeshWindow->Interact();
 	}
@@ -1764,9 +1764,9 @@ void vtkMultiresolutionIO::Synthetize()
 
 void vtkMultiresolutionIO::DisplayHires()
 {
-	this->MeshWindow->SetInput(this->SynthesisMeshes[this->NumberOfFilters-1]);
+	this->MeshWindow->SetInputData(this->SynthesisMeshes[this->NumberOfFilters-1]);
 	this->MeshWindow->Render();
-	this->MeshWindow->SetInput(this->SynthesisMeshes[0]);
+	this->MeshWindow->SetInputData(this->SynthesisMeshes[0]);
 	this->MeshWindow->Render();
 	this->MeshWindow->Interact();
 }	

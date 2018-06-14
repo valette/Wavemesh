@@ -53,6 +53,7 @@ vtkVolumeProperties::vtkVolumeProperties()
   this->YG = 0.0;
   this->ZG = 0.0;
   this->NormalizedShapeIndex = 0.0;
+  this->InputData = 0;
 }
 
 // Constructs with initial 0 values.
@@ -60,31 +61,12 @@ vtkVolumeProperties::~vtkVolumeProperties()
 {
 }
 
-// Description:
-// Specifies the input data...
-void vtkVolumeProperties::SetInput(vtkPolyData *input)
-{
-  this->vtkProcessObject::SetNthInput(0, input);
-}
-
-//----------------------------------------------------------------------------
-vtkPolyData *vtkVolumeProperties::GetInput()
-{
-  if (this->NumberOfInputs < 1)
-    {
-    return NULL;
-    }
-  
-  return (vtkPolyData *)(this->Inputs[0]);
-}
-
-
 
 // Description:
 // Make sure input is available then call up execute method...
 void vtkVolumeProperties::Update()
 {
-  vtkPolyData *input = this->GetInput();
+  vtkPolyData *input = this->GetInputData();
   
   // make sure input is available
   if ( ! input )
@@ -93,34 +75,14 @@ void vtkVolumeProperties::Update()
     return;
     }
 
-  input->Update();
-
   if (input->GetMTime() > this->ExecuteTime || 
-      this->GetMTime() > this->ExecuteTime )
-    {
-    if ( input->GetDataReleased() )
-      {
-      input->Update();
-      }
+      this->GetMTime() > this->ExecuteTime ) {
     this->InvokeEvent(vtkCommand::StartEvent,NULL);
 
-    // reset Abort flag
-    this->AbortExecute = 0;
-    this->Progress = 0.0;
     this->Execute();
     this->ExecuteTime.Modified();
-    if ( !this->AbortExecute )
-      {
-      this->UpdateProgress(1.0);
-      }
-
     this->InvokeEvent(vtkCommand::EndEvent,NULL);
     }
-  if ( input->ShouldIReleaseData() )
-    {
-    input->ReleaseData();
-    }
-
 }
 
 // Description:
@@ -129,7 +91,7 @@ void vtkVolumeProperties::Update()
 void vtkVolumeProperties::Execute()
 {
 	vtkIdList *ptIds;
-	vtkPolyData *input = this->GetInput();
+	vtkPolyData *input = this->GetInputData();
 	int cellId, numCells, numPts, numIds;
 	double *p;
 

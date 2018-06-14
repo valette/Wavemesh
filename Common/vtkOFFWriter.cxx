@@ -5,7 +5,6 @@
   Language:  C++
   Date:      2003/05
   Auteurs:   Alexandre Gouaillard
-
 =========================================================================*/
 #include <vtkObjectFactory.h>
 #include <vtkPolyData.h>

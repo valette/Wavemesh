@@ -44,12 +44,12 @@ int main( int argc, char *argv[] )
 	Mesh->DisplayMeshProperties();
 	
 	RenderWindow *Window=RenderWindow::New();
-	Window->SetInput(Mesh);
+	Window->SetInputData(Mesh);
 	Window->Render();
 	Window->Interact();
 	
 	vtkPLYWriter *Writer=vtkPLYWriter::New();
-	Writer->SetInput(Mesh);
+	Writer->SetInputData(Mesh);
 	Writer->SetFileName("mesh.ply");
 	Writer->Write();
 	Writer->Delete();
