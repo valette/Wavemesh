@@ -59,6 +59,7 @@
 */
 #include <iostream>
 #include <fstream>
+#include <vtkObject.h>
 #include "port.h"
 
 extern char coderversion[];
@@ -71,7 +72,7 @@ typedef uint4 code_value;       /* Type of a rangecode value       */
 
 typedef uint4 freq; 
 
-class rangedecoder
+class VTK_EXPORT rangedecoder
 {
 public:
 

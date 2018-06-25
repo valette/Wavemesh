@@ -59,6 +59,7 @@ locate the beginning of a block if you have only the end.
 */
 #include <iostream>
 #include <fstream>
+#include <vtkObject.h>
 #include "port.h"
 
 extern char coderversion[];
@@ -73,7 +74,7 @@ typedef uint4 freq;
 
 /* make the following private in the arithcoder object in C++	    */
 
-class rangeencoder
+class VTK_EXPORT rangeencoder
 {
 public:
 	// open a file for coding
