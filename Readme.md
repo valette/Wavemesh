@@ -25,6 +25,7 @@ This code is distributed under the GPL License
 ### Simple compilation HowTo under Linux ###
 
 	git clone https://github.com/valette/Wavemesh.git
+	cd Wavemesh
 	cmake . -DCMAKE_BUILD_TYPE=Release
 	make
 
