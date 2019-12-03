@@ -1,5 +1,8 @@
 Wavemesh
 ========
+<p align="center">
+  <img src="https://www.creatis.insa-lyon.fr/~valette/public/project/wavemesh/featured.png">
+</p>
 
 ### References ###
 This code is the implementation deriving from those papers:
