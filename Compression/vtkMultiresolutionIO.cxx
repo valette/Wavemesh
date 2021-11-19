@@ -58,7 +58,7 @@ void vtkMultiresolutionIO::SaveWavelets()
 {
 	int i,j;
 	fstream	WavF;
-	WavF.open ("wavelets.dat", ofstream::out | ofstream::trunc|ios::binary);
+	WavF.open ("wavelets.dat", std::ofstream::out | std::ofstream::trunc|ios::binary);
 	for	(i=0;i<this->NumberOfFilters;i++)
 	{
 		for (j=0;j<this->Filters[i]->Wavelets->GetNumberOfTuples();j++)
@@ -79,7 +79,7 @@ void vtkMultiresolutionIO::SaveWavelets()
 void vtkMultiresolutionIO::LoadWavelets()
 {
 	fstream WavF;
-	WavF.open ("wavelets.dat", ofstream::in|ios::binary);
+	WavF.open ("wavelets.dat", std::ofstream::in|ios::binary);
 	int i,j;
 
 	for	(i=0;i<this->NumberOfFilters;i++)
@@ -802,7 +802,7 @@ void vtkMultiresolutionIO::EncodeProgressivePrecision()
 	{
 
 		std::ofstream Repport;
-		Repport.open ("repport.txt", ofstream::out | ofstream::trunc);
+		Repport.open ("repport.txt", std::ofstream::out | std::ofstream::trunc);
 
 		double duration,ratio;
 #if ( (VTK_MAJOR_VERSION >= 5))
@@ -1523,7 +1523,7 @@ void vtkMultiresolutionIO::EncodeProgressiveResolution()
 		ratio= (this->Filters[0]->GetOutput()->GetNumberOfCells())/duration;
 
 		std::ofstream Repport;
-		Repport.open ("repport.txt", ofstream::out | ofstream::trunc);
+		Repport.open ("repport.txt", std::ofstream::out | std::ofstream::trunc);
 		Repport<<"Filename: "<<this->FileName<<endl;
 
 		Repport<<"Quantization : "<<this->Quantization<<" bits"<<endl;

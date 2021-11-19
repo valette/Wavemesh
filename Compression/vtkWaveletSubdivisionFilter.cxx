@@ -1,5 +1,4 @@
 //  This software is governed by the GPL license (see License.txt)
-
 #include <vector>
 #include <math.h>
 
@@ -35,7 +34,7 @@ void vtkWaveletSubdivisionFilter::SaveWavelets(const char *Filename)
 {
 	int i;
 	fstream	WavF;
-	WavF.open (Filename, ofstream::out | ofstream::trunc);
+	WavF.open (Filename, std::ofstream::out | std::ofstream::trunc);
 	WavF<<"Input: "<<this->SubdivisionInput->GetNumberOfPoints()<<" points"<<endl;
 	WavF<<"Output: "<<this->SubdivisionOutput->GetNumberOfPoints()<<" points"<<endl;
 	for	(i=0;i<this->IntegerWavelets->GetNumberOfTuples();i++)

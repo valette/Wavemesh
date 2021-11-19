@@ -22,7 +22,7 @@ int main( int argc, char *argv[] )
 	Mesh->AddVertex(0,1,0);
 	Mesh->AddFace(0,1,2);
 
-	int const NumberOfFilters=5;
+	int NumberOfFilters=5;
 	vtkWaveletSubdivisionFilter *Filters[NumberOfFilters];
 
 	for (int i=0;i<NumberOfFilters;i++)
