@@ -22,12 +22,14 @@ This code is distributed under the GPL License
 (copyright CNRS, INSA-Lyon, UCBL, INSERM.)
 
 ### Dependencies: ###
-* VTK (version 6.0 or later) www.vtk.org
+* VTK www.vtk.org
 * CMAKE www.cmake.org
 
 ### Simple compilation HowTo under Linux ###
 
 	git clone https://github.com/valette/Wavemesh.git
+	git submodule init
+	git submodule update
 	cd Wavemesh
 	cmake . -DCMAKE_BUILD_TYPE=Release
 	make
