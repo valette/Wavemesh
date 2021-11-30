@@ -70,10 +70,7 @@ void vtkWaveletSubdivisionFilter::WriteCoefficients()
 		}
 	}
 	size=max-min+1;
-	std::vector<int> table;
-	table.resize(size);
-
-	for (i=0;i<size;i++) table[i]=0;
+	std::vector<int> table(size, 0);
 
 	for (i=0;i<this->IntegerWavelets->GetNumberOfTuples();i++)
 	{			
@@ -96,8 +93,6 @@ void vtkWaveletSubdivisionFilter::WriteCoefficients()
 	}
 
 	this->EstimatedGeometryBits=entropy*3*this->IntegerWavelets->GetNumberOfTuples();
-	table.empty();
-
 	QsmGeometry.initqsmodel(size,15,1000,NULL,1);
 
 	if (this->CoordinatesCoupling==1)
