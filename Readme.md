@@ -39,6 +39,10 @@ the executables (wavemesh and others should be found under the "bin" subdirector
 ### Options ###
 execute wavemesh without arguments to see the available options.
 
+### Pre-build binary for Windows ###
+A pre-build binary is available here : 
+https://www.creatis.insa-lyon.fr/~valette/wavemesh.exe
+
 comments, suggestions : https://github.com/valette/Wavemesh/issues
 
 
