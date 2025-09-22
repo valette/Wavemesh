@@ -42,3 +42,9 @@ jobs:
     - name: Build
       working-directory: ${{github.workspace}}/build
       run: cmake --build . --parallel 2
+
+    - name: Test
+      working-directory: ${{github.workspace}}/build
+      run: |
+        export LD_LIBRARY_PATH=/opt/vtk/install/lib/:/opt/catalyst/install/lib/:$LD_LIBRARY_PATH
+        bash ../source/test.sh
