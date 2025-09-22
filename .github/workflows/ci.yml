@@ -29,6 +29,7 @@ jobs:
         path: 'source'
         fetch-depth: 0
         lfs: 'false'
+        submodules: 'recursive'
 
     - name: Setup Directories
       working-directory: ${{github.workspace}}
