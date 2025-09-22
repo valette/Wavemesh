@@ -1,3 +1,5 @@
+[![CI](https://github.com/valette/Wavemesh/actions/workflows/ci.yml/badge.svg)](https://github.com/valette/Wavemesh/actions/workflows/ci.yml)
+
 Wavemesh
 ========
 <p align="center">
@@ -40,7 +42,7 @@ the executables (wavemesh and others should be found under the "bin" subdirector
 execute wavemesh without arguments to see the available options.
 
 ### Pre-build binary for Windows ###
-A pre-build binary is available here : 
+A pre-build binary is available here :
 https://www.creatis.insa-lyon.fr/~valette/wavemesh.exe
 
 comments, suggestions : https://github.com/valette/Wavemesh/issues

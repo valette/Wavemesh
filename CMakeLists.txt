@@ -11,8 +11,27 @@ SET (EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin CACHE PATH "Single output 
 SET (LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin CACHE PATH "Single output directory for building all libraries.")
 MARK_AS_ADVANCED(LIBRARY_OUTPUT_PATH EXECUTABLE_OUTPUT_PATH)
 
-find_package(VTK REQUIRED NO_MODULE)
-include(${VTK_USE_FILE})
+# find_package
+find_package(VTK
+    REQUIRED
+    COMPONENTS
+    CommonSystem
+    FiltersModeling
+    ImagingGeneral
+    InteractionStyle
+    IOXML
+    IOExport
+    IOGeometry
+    IOImport
+    IOLegacy
+    IOMINC
+    IOPLY
+    RenderingLabel
+    RenderingOpenGL2
+    RenderingGL2PSOpenGL2
+)
+
+include_directories(${VTK_INCLUDE_DIRS})
 
 SET(VTKSURFACE_PROJECT_DIR ${PROJECT_SOURCE_DIR})
 SET(VTKSURFACE_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/ACVD/Common)
