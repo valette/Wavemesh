@@ -6,14 +6,15 @@
 #include <vtkCellData.h>
 #include <vtkRenderWindow.h>
 #include <vtkRenderWindowInteractor.h>
-#include <vtkLookupTable.h>                                                     
-#include <vtkActor.h>                                                           
-#include <vtkRenderer.h>                                                        
+#include <vtkLookupTable.h>
+#include <vtkActor.h>
+#include <vtkRenderer.h>
 #include <vtkCamera.h>
 
 #include "vtkWaveletSubdivisionFilter.h"
 #include "RenderWindow.h"
 
+using std::cout;
 
 // first include the required header files for the vtk classes we are using
 
@@ -73,8 +74,8 @@ void vtkWaveletSubdivisionFilter::WriteCoefficients()
 	std::vector<int> table(size, 0);
 
 	for (i=0;i<this->IntegerWavelets->GetNumberOfTuples();i++)
-	{			
-		this->IntegerWavelets->GetTuple(i,Wavelet);				
+	{
+		this->IntegerWavelets->GetTuple(i,Wavelet);
 		for (j=0;j<3;j++)
 			table[(int)Wavelet[j]-min]++;
 	}
@@ -245,7 +246,7 @@ void vtkWaveletSubdivisionFilter::SolveInverseProblem (vtkIdType initial_face)
 		x[3]=1;
 		lut->SetTableValue (0,x);
 
-		// The value 1 is for faces that remain intact 
+		// The value 1 is for faces that remain intact
 		x[0]=1;
 		x[1]=1;
 		x[2]=1;
@@ -399,7 +400,7 @@ void vtkWaveletSubdivisionFilter::ComputeVertexContribution(vtkIdType p1,vtkIdTy
 		V1[2]-=Vertex[2]/12.0;
 
 		v1=this->SubdivisionInput->GetThirdPoint(f2,p1,p2);
-		Points->GetPoint(v1, Vertex);	
+		Points->GetPoint(v1, Vertex);
 		V1[0]-=Vertex[0]/12.0;
 		V1[1]-=Vertex[1]/12.0;
 		V1[2]-=Vertex[2]/12.0;
@@ -415,8 +416,8 @@ void vtkWaveletSubdivisionFilter::ComputeVertexContribution(vtkIdType p1,vtkIdTy
 		Edge=this->SubdivisionInput->IsEdge(p1,p2);
 		this->SubdivisionInput->GetEdgeFaces(Edge,f1,f2);
 		v1=this->SubdivisionInput->GetThirdPoint(f1,p1,p2);
-		this->SubdivisionInput->Conquer(f1,p1,v1,f2,v2);	
-		Points->GetPoint(v2, Vertex);	
+		this->SubdivisionInput->Conquer(f1,p1,v1,f2,v2);
+		Points->GetPoint(v2, Vertex);
 		V1[0]-=Vertex[0]/8.0;
 		V1[1]-=Vertex[1]/8.0;
 		V1[2]-=Vertex[2]/8.0;
@@ -471,7 +472,7 @@ void vtkWaveletSubdivisionFilter::ComputeVertexContribution2(vtkIdType p1,vtkIdT
 	vtkPoints *Points=this->SubdivisionInput->GetPoints();
 	vtkSurface *MInput=this->SubdivisionInput;
 
-	Points->GetPoint(p1, Vertex);	
+	Points->GetPoint(p1, Vertex);
 
 	if (MInput->GetNumberOfBoundaries(p1)>0)
 	{
@@ -483,12 +484,12 @@ void vtkWaveletSubdivisionFilter::ComputeVertexContribution2(vtkIdType p1,vtkIdT
 	Valence=MInput->GetValence(p1);
 	if (Valence==3)
 	{
-		Points->GetPoint(p1, Vertex);	
+		Points->GetPoint(p1, Vertex);
 		V1[0]+=3.0*Vertex[0]/12.0;
 		V1[1]+=3.0*Vertex[1]/12.0;
 		V1[2]+=3.0*Vertex[2]/12.0;
 
-		Points->GetPoint(p2, Vertex);	
+		Points->GetPoint(p2, Vertex);
 		V1[0]-=Vertex[0]/12.0;
 		V1[1]-=Vertex[1]/12.0;
 		V1[2]-=Vertex[2]/12.0;
@@ -496,14 +497,14 @@ void vtkWaveletSubdivisionFilter::ComputeVertexContribution2(vtkIdType p1,vtkIdT
 		Edge=MInput->IsEdge(p1,p2);
 		MInput->GetEdgeFaces(Edge,f1,f2);
 		v1=MInput->GetThirdPoint(f1,p1,p2);
-		Points->GetPoint(v1, Vertex);	
+		Points->GetPoint(v1, Vertex);
 		V1[0]-=Vertex[0]/12.0;
 		V1[1]-=Vertex[1]/12.0;
 		V1[2]-=Vertex[2]/12.0;
 
 
 		v1=MInput->GetThirdPoint(f2,p1,p2);
-		Points->GetPoint(v1, Vertex);	
+		Points->GetPoint(v1, Vertex);
 		V1[0]-=Vertex[0]/12.0;
 		V1[1]-=Vertex[1]/12.0;
 		V1[2]-=Vertex[2]/12.0;
@@ -514,12 +515,12 @@ void vtkWaveletSubdivisionFilter::ComputeVertexContribution2(vtkIdType p1,vtkIdT
 	}
 	if (Valence==4)
 	{
-		Points->GetPoint(p1, Vertex);	
+		Points->GetPoint(p1, Vertex);
 		V1[0]+=2.0*Vertex[0]/8.0;
 		V1[1]+=2.0*Vertex[1]/8.0;
 		V1[2]+=2.0*Vertex[2]/8.0;
 
-		Points->GetPoint(p2, Vertex);	
+		Points->GetPoint(p2, Vertex);
 		V1[0]-=Vertex[0]/8.0;
 		V1[1]-=Vertex[1]/8.0;
 		V1[2]-=Vertex[2]/8.0;
@@ -528,7 +529,7 @@ void vtkWaveletSubdivisionFilter::ComputeVertexContribution2(vtkIdType p1,vtkIdT
 		MInput->GetEdgeFaces(Edge,f1,f2);
 		v1=MInput->GetThirdPoint(f1,p1,p2);
 		MInput->Conquer(f1,p1,v1,f2,v2);
-		Points->GetPoint(v2, Vertex);	
+		Points->GetPoint(v2, Vertex);
 
 		V1[0]-=Vertex[0]/8.0;
 		V1[1]-=Vertex[1]/8.0;
@@ -546,8 +547,8 @@ void vtkWaveletSubdivisionFilter::ComputeVertexContribution2(vtkIdType p1,vtkIdT
 
 		Edge=MInput->IsEdge(p1,p2);
 		MInput->GetEdgeFaces(Edge,f1,f2);
-		v1=MInput->GetThirdPoint(f1,p1,p2);	
-		Points->GetPoint(p2, Vertex);	
+		v1=MInput->GetThirdPoint(f1,p1,p2);
+		Points->GetPoint(p2, Vertex);
 		Sj=5.0/4.0+1.0/(2*(double)Valence)-0.5;
 
 		Sum=Sj;
@@ -556,7 +557,7 @@ void vtkWaveletSubdivisionFilter::ComputeVertexContribution2(vtkIdType p1,vtkIdT
 		V1[2]+=Vertex[2]*Sj;
 		for (j=1;j<Valence;j++)
 		{
-			Points->GetPoint(v1, Vertex);	
+			Points->GetPoint(v1, Vertex);
 			Sj=0.25+cos(2.0*pi*(double)j/(double)Valence)
 				+0.5*cos(4.0*pi*(double)j/(double)Valence)/(double)Valence;
 			MInput->Conquer(f1,p1,v1,f2,v2);
@@ -567,7 +568,7 @@ void vtkWaveletSubdivisionFilter::ComputeVertexContribution2(vtkIdType p1,vtkIdT
 			V1[1]+=Vertex[1]*Sj;
 			V1[2]+=Vertex[2]*Sj;
 		}
-		Points->GetPoint(p1, Vertex);	
+		Points->GetPoint(p1, Vertex);
 		V1[0]-=Vertex[0]*Sum;
 		V1[1]-=Vertex[1]*Sum;
 		V1[2]-=Vertex[2]*Sum;
@@ -599,48 +600,48 @@ void vtkWaveletSubdivisionFilter::ComputeNewVertexCoordinates(vtkIdType p1,vtkId
 			Val1=MInput->GetValence(p1);
 			if (Val1==6)
 			{
-				Val2=MInput->GetValence(p2);			
-				if (Val2==6)	
+				Val2=MInput->GetValence(p2);
+				if (Val2==6)
 				{
 					// here Valence(p1)=6 and Valence (p2=6)
 
 					Edge=MInput->IsEdge(p1,p2);
 					MInput->GetEdgeFaces(Edge,f1,f2);
-					v1=MInput->GetThirdPoint(f1,p1,p2);				
-					Points->GetPoint(v1, Vertex);	
+					v1=MInput->GetThirdPoint(f1,p1,p2);
+					Points->GetPoint(v1, Vertex);
 					V1[0]+=Vertex[0]/8.0;
 					V1[1]+=Vertex[1]/8.0;
 					V1[2]+=Vertex[2]/8.0;
 
 
 					MInput->Conquer(f1,p1,v1,f2,v2);
-					Points->GetPoint(v2, Vertex);	
+					Points->GetPoint(v2, Vertex);
 					V1[0]-=Vertex[0]/16.0;
 					V1[1]-=Vertex[1]/16.0;
 					V1[2]-=Vertex[2]/16.0;
 
 					MInput->Conquer(f1,p2,v1,f2,v2);
-					Points->GetPoint(v2, Vertex);	
+					Points->GetPoint(v2, Vertex);
 					V1[0]-=Vertex[0]/16.0;
 					V1[1]-=Vertex[1]/16.0;
 					V1[2]-=Vertex[2]/16.0;
 
 					MInput->GetEdgeFaces(Edge,f1,f2);
 					v1=MInput->GetThirdPoint(f2,p1,p2);
-					Points->GetPoint(v1, Vertex);	
+					Points->GetPoint(v1, Vertex);
 					V1[0]+=Vertex[0]/8.0;
 					V1[1]+=Vertex[1]/8.0;
 					V1[2]+=Vertex[2]/8.0;
 
 
 					MInput->Conquer(f2,p1,v1,f1,v2);
-					Points->GetPoint(v2, Vertex);	
+					Points->GetPoint(v2, Vertex);
 					V1[0]-=Vertex[0]/16.0;
 					V1[1]-=Vertex[1]/16.0;
 					V1[2]-=Vertex[2]/16.0;
 
 					MInput->Conquer(f2,p2,v1,f1,v2);
-					Points->GetPoint(v2, Vertex);	
+					Points->GetPoint(v2, Vertex);
 					V1[0]-=Vertex[0]/16.0;
 					V1[1]-=Vertex[1]/16.0;
 					V1[2]-=Vertex[2]/16.0;
@@ -679,10 +680,10 @@ void vtkWaveletSubdivisionFilter::ComputeNewVertexCoordinates(vtkIdType p1,vtkId
 			return;
 		}
 	}
-	else 
+	else
 	{
-		this->SubdivisionOutput->GetPoints()->GetPoint(p1, P1);	
-		this->SubdivisionOutput->GetPoints()->GetPoint(p2, P2);	
+		this->SubdivisionOutput->GetPoints()->GetPoint(p1, P1);
+		this->SubdivisionOutput->GetPoints()->GetPoint(p2, P2);
 
 		if (this->GeometryPrediction==0)
 		{
@@ -749,11 +750,11 @@ void vtkWaveletSubdivisionFilter::Reconstruct()
 	{
 		for (PtId=0;PtId<NOldPoints;PtId++)
 		{
-			OldPoints->GetPoint(PtId, P1);	
+			OldPoints->GetPoint(PtId, P1);
 			P2[0]=P1[0];
 			P2[1]=P1[1];
 			P2[2]=P1[2];
-			NewPoints->SetPoint(PtId, P2);	
+			NewPoints->SetPoint(PtId, P2);
 		}
 	}
 
@@ -765,8 +766,8 @@ void vtkWaveletSubdivisionFilter::Reconstruct()
 		{
 			for (PtId=0;PtId<NOldPoints;PtId++)
 			{
-				OldPoints->GetPoint(PtId, P1);				
-				NewPoints->GetPoint(PtId, P2);	
+				OldPoints->GetPoint(PtId, P1);
+				NewPoints->GetPoint(PtId, P2);
 				P2[0]=P1[0];
 				P2[1]=P1[1];
 				P2[2]=P1[2];
@@ -783,7 +784,7 @@ void vtkWaveletSubdivisionFilter::Reconstruct()
 
 					NonZero=NonZero->NextHor;
 				}
-				NewPoints->SetPoint(PtId, P2);	
+				NewPoints->SetPoint(PtId, P2);
 			}
 		}
 		else	// if (this->ArithmeticType==1)
@@ -805,13 +806,13 @@ void vtkWaveletSubdivisionFilter::Reconstruct()
 					V[2]+=NonZero->Value*IntWavelet[2];
 
 					NonZero=NonZero->NextHor;
-				}			
-				OldPoints->GetPoint(PtId, P1);				
-				NewPoints->GetPoint(PtId, P2);					
+				}
+				OldPoints->GetPoint(PtId, P1);
+				NewPoints->GetPoint(PtId, P2);
 				P2[0]=P1[0]-floor(V[0]+0.5);
 				P2[1]=P1[1]-floor(V[1]+0.5);
 				P2[2]=P1[2]-floor(V[2]+0.5);
-				NewPoints->SetPoint(PtId, P2);	
+				NewPoints->SetPoint(PtId, P2);
 			}
 		}
 	}
@@ -852,21 +853,21 @@ void vtkWaveletSubdivisionFilter::Reconstruct()
 				Po2[1]-=(double)Wavelet[1]*k;
 				Po2[2]-=(double)Wavelet[2]*k;
 
-				NewPoints->SetPoint(p1, Po1);				
-				NewPoints->SetPoint(p2, Po2);	
+				NewPoints->SetPoint(p1, Po1);
+				NewPoints->SetPoint(p2, Po2);
 
 			}
 
 			for (PtId=0;PtId<NOldPoints;PtId++)
 			{
-				OldPoints->GetPoint(PtId, P1);				
-				NewPoints->GetPoint(PtId, Po1);	
+				OldPoints->GetPoint(PtId, P1);
+				NewPoints->GetPoint(PtId, Po1);
 
 				Po1[0]=Po1[0]+P1[0];
 				Po1[1]=Po1[1]+P1[1];
 				Po1[2]=Po1[2]+P1[2];
 
-				NewPoints->SetPoint(PtId, Po1);	
+				NewPoints->SetPoint(PtId, Po1);
 			}
 		}
 		else	// if (this->ArithmeticType==1)
@@ -923,7 +924,7 @@ void vtkWaveletSubdivisionFilter::Reconstruct()
 
 	// Calcul des nouveaux points:
 	if (this->ArithmeticType==0)
-	{		
+	{
 		for (PtId=NOldPoints;PtId<NNewPoints;PtId++)
 		{
 			p1=this->vertices[PtId].parent1;
@@ -955,8 +956,8 @@ void vtkWaveletSubdivisionFilter::Reconstruct()
 			p1=this->vertices[PtId].parent1;
 			p2=this->vertices[PtId].parent2;
 
-			NewPoints->GetPoint(p1, P1);	
-			NewPoints->GetPoint(p2, P2);	
+			NewPoints->GetPoint(p1, P1);
+			NewPoints->GetPoint(p2, P2);
 
 			V1[0]=0.5*(P1[0]+P2[0]);
 			V1[1]=0.5*(P1[1]+P2[1]);
@@ -968,7 +969,7 @@ void vtkWaveletSubdivisionFilter::Reconstruct()
 			V1[1]=ceil(V1[1]+IntWavelet[1]);
 			V1[2]=ceil(V1[2]+IntWavelet[2]);
 
-			NewPoints->SetPoint(PtId, V1);	
+			NewPoints->SetPoint(PtId, V1);
 		}
 	}
 
@@ -977,7 +978,7 @@ void vtkWaveletSubdivisionFilter::Reconstruct()
 		Wavelets->Delete();
 	}
 
-	this->SubdivisionOutput->Modified();                   
+	this->SubdivisionOutput->Modified();
 }
 
 void vtkWaveletSubdivisionFilter::Approximate()
@@ -985,7 +986,7 @@ void vtkWaveletSubdivisionFilter::Approximate()
 	vtkIdType PtId,p1,p2,NNewPoints,NOldPoints;
 	double *Wavelet;
 	int *IntWavelet;
-	double P1[3], P2[3], Po1[3], Po2[3], V1[3];		
+	double P1[3], P2[3], Po1[3], Po2[3], V1[3];
 	double V[3];
 
 	vtkPoints *NewPoints=this->SubdivisionOutput->GetPoints();
@@ -1025,9 +1026,9 @@ void vtkWaveletSubdivisionFilter::Approximate()
 			p1=this->vertices[PtId].parent1;
 			p2=this->vertices[PtId].parent2;
 
-			NewPoints->GetPoint(PtId, V1);	
-			NewPoints->GetPoint(p1, P1);	
-			NewPoints->GetPoint(p2, P2);	
+			NewPoints->GetPoint(PtId, V1);
+			NewPoints->GetPoint(p1, P1);
+			NewPoints->GetPoint(p2, P2);
 
 			Wavelet=Wavelets->GetPointer((PtId-NOldPoints)*3);
 
@@ -1043,9 +1044,9 @@ void vtkWaveletSubdivisionFilter::Approximate()
 			p1=this->vertices[PtId].parent1;
 			p2=this->vertices[PtId].parent2;
 
-			NewPoints->GetPoint(PtId, V1);	
-			NewPoints->GetPoint(p1, P1);	
-			NewPoints->GetPoint(p2, P2);	
+			NewPoints->GetPoint(PtId, V1);
+			NewPoints->GetPoint(p1, P1);
+			NewPoints->GetPoint(p2, P2);
 
 			IntWavelet=IntegerWavelets->GetPointer((PtId-NOldPoints)*3);
 
@@ -1060,8 +1061,8 @@ void vtkWaveletSubdivisionFilter::Approximate()
 	{
 		for (PtId=0;PtId<NOldPoints;PtId++)
 		{
-			NewPoints->GetPoint(PtId, P1);	
-			OldPoints->SetPoint(PtId, P1);	
+			NewPoints->GetPoint(PtId, P1);
+			OldPoints->SetPoint(PtId, P1);
 		}
 	}
 
@@ -1072,7 +1073,7 @@ void vtkWaveletSubdivisionFilter::Approximate()
 		{
 			for (PtId=0;PtId<NOldPoints;PtId++)
 			{
-				NewPoints->GetPoint(PtId, P2);	
+				NewPoints->GetPoint(PtId, P2);
 
 				NonZero=this->Alpha->FirstHor[PtId];
 
@@ -1087,7 +1088,7 @@ void vtkWaveletSubdivisionFilter::Approximate()
 					NonZero=NonZero->NextHor;
 				}
 
-				OldPoints->SetPoint(PtId, P2);	
+				OldPoints->SetPoint(PtId, P2);
 			}
 		}
 		else	// if (this->ArithmeticType==1)
@@ -1111,13 +1112,13 @@ void vtkWaveletSubdivisionFilter::Approximate()
 					NonZero=NonZero->NextHor;
 				}
 
-				NewPoints->GetPoint(PtId, P1);	
+				NewPoints->GetPoint(PtId, P1);
 
 				P2[0]=P1[0]+floor(V[0]+0.5);
 				P2[1]=P1[1]+floor(V[1]+0.5);
 				P2[2]=P1[2]+floor(V[2]+0.5);
 
-				OldPoints->SetPoint(PtId, P2);	
+				OldPoints->SetPoint(PtId, P2);
 			}
 		}
 	}
@@ -1127,7 +1128,7 @@ void vtkWaveletSubdivisionFilter::Approximate()
 	{
 		this->ComputeFastLiftingCoeff();
 		if (this->ArithmeticType==1)
-		{	
+		{
 			double k,den;
 			k=this->LiftNum;
 			den=this->LiftDen;
@@ -1148,8 +1149,8 @@ void vtkWaveletSubdivisionFilter::Approximate()
 
 				IntWavelet=IntegerWavelets->GetPointer((PtId-NOldPoints)*3);
 
-				OldPoints->GetPoint(p1, Po1);	
-				OldPoints->GetPoint(p2, Po2);	
+				OldPoints->GetPoint(p1, Po1);
+				OldPoints->GetPoint(p2, Po2);
 
 				Po1[0]+=(double)(IntWavelet[0]*k);
 				Po1[1]+=(double)(IntWavelet[1]*k);
@@ -1159,8 +1160,8 @@ void vtkWaveletSubdivisionFilter::Approximate()
 				Po2[1]+=(double)(IntWavelet[1]*k);
 				Po2[2]+=(double)(IntWavelet[2]*k);
 
-				OldPoints->SetPoint(p1, Po1);	
-				OldPoints->SetPoint(p2, Po2);	
+				OldPoints->SetPoint(p1, Po1);
+				OldPoints->SetPoint(p2, Po2);
 			}
 
 			for (PtId=0;PtId<NOldPoints;PtId++)
@@ -1172,8 +1173,8 @@ void vtkWaveletSubdivisionFilter::Approximate()
 				Po1[1]=(double)floor(Po1[1])+P1[1];
 				Po1[2]=(double)floor(Po1[2])+P1[2];
 
-				NewPoints->SetPoint(PtId, P1);	
-				OldPoints->SetPoint(PtId, Po1);	
+				NewPoints->SetPoint(PtId, P1);
+				OldPoints->SetPoint(PtId, Po1);
 			}
 		}
 		else	// if (this->ArithmeticType==0)
@@ -1198,8 +1199,8 @@ void vtkWaveletSubdivisionFilter::Approximate()
 
 				Wavelet=Wavelets->GetPointer((PtId-NOldPoints)*3);
 
-				OldPoints->GetPoint(p1, Po1);	
-				OldPoints->GetPoint(p2, Po2);	
+				OldPoints->GetPoint(p1, Po1);
+				OldPoints->GetPoint(p2, Po2);
 
 				Po1[0]+=(double)(Wavelet[0]*k);
 				Po1[1]+=(double)(Wavelet[1]*k);
@@ -1209,25 +1210,25 @@ void vtkWaveletSubdivisionFilter::Approximate()
 				Po2[1]+=(double)(Wavelet[1]*k);
 				Po2[2]+=(double)(Wavelet[2]*k);
 
-				OldPoints->SetPoint(p1, Po1);	
-				OldPoints->SetPoint(p2, Po2);	
+				OldPoints->SetPoint(p1, Po1);
+				OldPoints->SetPoint(p2, Po2);
 			}
 
 			for (PtId=0;PtId<NOldPoints;PtId++)
 			{
-				NewPoints->GetPoint(PtId, P1);	
-				OldPoints->GetPoint(PtId, Po1);	
+				NewPoints->GetPoint(PtId, P1);
+				OldPoints->GetPoint(PtId, Po1);
 
 				Po1[0]=Po1[0]+P1[0];
 				Po1[1]=Po1[1]+P1[1];
 				Po1[2]=Po1[2]+P1[2];
 
-				OldPoints->SetPoint(PtId, Po1);	
+				OldPoints->SetPoint(PtId, Po1);
 			}
 		}
 	}
 
-	// Lifting dual (prédiction des coefficients d'ondelette)
+	// Lifting dual (prï¿½diction des coefficients d'ondelette)
 	if (this->GeometryPrediction==1)
 	{
 		double Vertex[3];
@@ -1353,7 +1354,7 @@ void vtkWaveletSubdivisionFilter::DisplayWavelet()
 
 	if (this->ProcessLifting==1)
 	{
-		NonZero1=this->Alpha->FirstVer[v1-number_of_old_vertices];		
+		NonZero1=this->Alpha->FirstVer[v1-number_of_old_vertices];
 
 		while (NonZero1!=0)
 		{
@@ -1365,7 +1366,7 @@ void vtkWaveletSubdivisionFilter::DisplayWavelet()
 				ptr2->GetPoints()->GetPoint(v3,p);
 				p[2]-=NonZero1->Value*NonZero2->Value*factor;
 				NonZero2=NonZero2->NextVer;
-				ptr2->GetPoints()->SetPoint(v3,p);	
+				ptr2->GetPoints()->SetPoint(v3,p);
 			}
 			NonZero1=NonZero1->NextVer;
 		}
@@ -1803,7 +1804,7 @@ void vtkWaveletSubdivisionFilter::Orthogonalize ()
 			}
 		}
 
-		//calcule tA*B dans Vect2 
+		//calcule tA*B dans Vect2
 		for (i=0;i<Width;i++)
 		{
 			sum=0;
@@ -1837,7 +1838,7 @@ void vtkWaveletSubdivisionFilter::Orthogonalize ()
 			}
 		}
 
-		// résolution de choleski:
+		// rï¿½solution de choleski:
 		tuple=Matrix2->GetPointer(0);
 		for (i=0;i<Width;i++,tuple+=MaxWidth)
 		{
@@ -1856,7 +1857,7 @@ void vtkWaveletSubdivisionFilter::Orthogonalize ()
 			Sol->SetValue(i,sum/Diag->GetValue(i));
 		}
 
-		//ajout à alpha
+		//ajout ï¿½ alpha
 
 		offset=ptr1->GetNumberOfPoints();
 
@@ -2005,7 +2006,7 @@ vtkIdType vtkWaveletSubdivisionFilter::GetEdgeMidPoint(vtkIdType v1,vtkIdType v2
 				this->BitsMidPoints1++;
 				if (this->ConnectivityOnly==0)
 				{
-					this->MergeInput->GetPoints()->GetPoint(v3,p3);	
+					this->MergeInput->GetPoints()->GetPoint(v3,p3);
 					v4=Mesh->AddVertex(p3);
 				}
 				else
@@ -2034,12 +2035,12 @@ vtkIdType vtkWaveletSubdivisionFilter::GetEdgeMidPoint(vtkIdType v1,vtkIdType v2
 			v2p=this->vertices[this->PointsIds->GetId(v2)].old_to_new;
 			e1=this->MergeOutput->IsEdge(v1p,v2p);
 			if (e1<0)
-				cout<<endl<<"problème d'arête"<<endl;
+				cout<<endl<<"problï¿½me d'arï¿½te"<<endl;
 			v3=this->edgesvector[e1].child;
 
 			e1=this->SubdivisionInput->IsEdge(v1,v2);
 			if (e1<0)
-				cout<<endl<<"problème d'arête"<<endl;
+				cout<<endl<<"problï¿½me d'arï¿½te"<<endl;
 			v4=this->EdgeMidPoints->GetId(e1);
 			if (v4>=0)
 			{
@@ -2096,7 +2097,7 @@ void vtkWaveletSubdivisionFilter::AddChildEdgeToTree(vtkIdType Child, vtkIdType 
 		this->TreeNextChildEdge->SetId(Child,this->TreeFirstChildEdge->GetId(Parent));
 		this->TreeFirstChildEdge->SetId(Parent,Child);
 	}
-	return;	
+	return;
 }
 
 void vtkWaveletSubdivisionFilter::InitTree()
@@ -2168,7 +2169,7 @@ void vtkWaveletSubdivisionFilter::Subdivision()
 			for (i=0;i<Input->GetNumberOfPoints();i++)
 			{
 				v1=PointsIds->GetId(i);
-				vp1=this->vertices[v1].new_to_old;	
+				vp1=this->vertices[v1].new_to_old;
 				PointsIds->SetId(i,this->vertices[v1].new_to_old);
 			}
 		}
@@ -2446,7 +2447,7 @@ void vtkWaveletSubdivisionFilter::Subdivision()
 								FacesSwapPerformed->SetValue(i,1);
 								FacesSwapPerformed->SetValue(f2,1);
 							}
-						}												
+						}
 					}
 					else
 					{
@@ -2513,7 +2514,7 @@ void vtkWaveletSubdivisionFilter::Subdivision()
 				if (v4==PointsIds->GetId(v5))
 					v4=v5;
 				else
-					v4=v6;	
+					v4=v6;
 
 				this->Bits1to3++;
 				if (this->IOType==1)
@@ -2756,7 +2757,7 @@ void vtkWaveletSubdivisionFilter::switchcontour(vtkIdType edge)
 					previous->NextElement=next;
 					delete edgesvector[edge].contour;
 					edgesvector[edge].contour=0;
-					return;		
+					return;
 				}
 			}
 		}
@@ -2791,7 +2792,7 @@ int vtkWaveletSubdivisionFilter::MatchParents(vtkIdType v1,vtkIdType p1,vtkIdTyp
 				}
 				t3[0]=t1[1]*t2[2]-t1[2]*t2[1];
 				t3[1]=t1[2]*t2[0]-t1[0]*t2[2];
-				t3[2]=t1[0]*t2[1]-t1[1]*t2[0];	
+				t3[2]=t1[0]*t2[1]-t1[1]*t2[0];
 
 				r=sqrt(t3[1]*t3[1]+t3[2]*t3[2]+t3[0]*t3[0])
 					/(t2[1]*t2[1]+t2[2]*t2[2]+t2[0]*t2[0]);
@@ -2863,12 +2864,12 @@ int vtkWaveletSubdivisionFilter::MatchParents2(vtkIdType v1,vtkIdType p1,vtkIdTy
 		edge1=this->MergeInput->IsEdge(v1,p2);
 		this->MergeInput->GetEdgeFaces(edge1,f3,f4);
 		if (f4>=0) return (0);
-	}	
+	}
 
 	if (this->vertices[v1].type==CHILD)
 	{
 		if (((this->vertices[v1].parent1!=p1)&&(this->vertices[v1].parent1!=p2))||
-			((this->vertices[v1].parent2!=p1)&&(this->vertices[v1].parent2!=p2))) 
+			((this->vertices[v1].parent2!=p1)&&(this->vertices[v1].parent2!=p2)))
 			return (0);
 		else
 			return (1);
@@ -2936,7 +2937,7 @@ int vtkWaveletSubdivisionFilter::MatchParents2(vtkIdType v1,vtkIdType p1,vtkIdTy
 		{
 			this->MergeInput->Conquer(f5,v2,v3,f6,v4);
 
-			if (this->MergeInput->IsEdge(p1,v3)>=0) 
+			if (this->MergeInput->IsEdge(p1,v3)>=0)
 			{
 				if (this->MatchParents(v3,p2,v4,f4,f6,3)!=1)
 					return (0);
@@ -3152,7 +3153,7 @@ int vtkWaveletSubdivisionFilter::PossibleParent(vtkIdType v1)
 						(v3!=this->vertices[v2].parent2))
 					{
 						this->MergeInput->Conquer(f1,v2,v3,f2,v4);
-						if (this->MatchParents(v3,v1,v4,f1,f2,2)!=1) 
+						if (this->MatchParents(v3,v1,v4,f1,f2,2)!=1)
 							return(0);
 					}
 				}
@@ -3562,7 +3563,7 @@ void vtkWaveletSubdivisionFilter::SolveInverseSubdivision4(vtkIdType initial_fac
 						{
 							if (this->MatchParents(ptId2,ptId4,ptId5,f3,f4,3)==1)
 							{
-								f5=this->AddFace(ptId3,ptId5,ptId4,edge2,edge1,edge3);	
+								f5=this->AddFace(ptId3,ptId5,ptId4,edge2,edge1,edge3);
 
 								faces[f5].lowrestype=4;
 
@@ -3611,7 +3612,7 @@ void vtkWaveletSubdivisionFilter::SolveInverseSubdivision4(vtkIdType initial_fac
 								}
 								this->ConquerRegularSubdivisions();
 							}
-						}	
+						}
 					}
 				}
 			}
@@ -3635,7 +3636,7 @@ void vtkWaveletSubdivisionFilter::SolveInverseSubdivision4(vtkIdType initial_fac
 			{
 				val1=this->vertices[ptId3].valence;
 				val2=this->vertices[ptId4].valence;
-				val3=this->vertices[ptId5].valence;		
+				val3=this->vertices[ptId5].valence;
 				if ((this->faces[f2].hirestype<0)&&
 					(this->faces[f3].hirestype<0)&&
 					(this->faces[f4].hirestype<0)
@@ -3649,7 +3650,7 @@ void vtkWaveletSubdivisionFilter::SolveInverseSubdivision4(vtkIdType initial_fac
 						{
 							if (this->MatchParents(ptId2,ptId4,ptId5,f3,f4,3)==1)
 							{
-								f5=this->AddFace(ptId3,ptId5,ptId4,edge2,edge1,edge3);	
+								f5=this->AddFace(ptId3,ptId5,ptId4,edge2,edge1,edge3);
 
 								faces[f5].lowrestype=4;
 
@@ -3687,7 +3688,7 @@ void vtkWaveletSubdivisionFilter::SolveInverseSubdivision4(vtkIdType initial_fac
 
 								this->M4to1++;
 
-								this->remaining_faces-=4;	
+								this->remaining_faces-=4;
 
 								if (this->DisplayEfficiency==1)
 								{
@@ -3698,7 +3699,7 @@ void vtkWaveletSubdivisionFilter::SolveInverseSubdivision4(vtkIdType initial_fac
 								}
 								this->ConquerRegularSubdivisions();
 							}
-						}	
+						}
 					}
 				}
 			}
@@ -3733,7 +3734,7 @@ void vtkWaveletSubdivisionFilter::SolveInverseSubdivision4(vtkIdType initial_fac
 
 		ptId1=edgesvector[edge1].child;
 
-		if (ptId1<0) 
+		if (ptId1<0)
 			goto failchild;
 
 		this->MergeOutput->GetEdgeVertices(edge1,ptId0,ptId2);
@@ -3868,7 +3869,7 @@ fail4:
 			}
 		}
 
-		///ici interviennent les permutations d'arête....
+		///ici interviennent les permutations d'arï¿½te....
 
 		TestLeft=0;
 		TestRight=0;
@@ -3887,10 +3888,10 @@ fail4:
 		if (this->PossibleParent(ptId4)!=1)
 			goto FailLeft4;
 
-		if (this->MatchParents(ptId3,ptId0,ptId5,f1,f4,3)!=1) 
+		if (this->MatchParents(ptId3,ptId0,ptId5,f1,f4,3)!=1)
 			goto FailLeft4;
 
-		if (this->MergeInput->IsEdge(ptId0,ptId4)>=0) 
+		if (this->MergeInput->IsEdge(ptId0,ptId4)>=0)
 			goto FailLeft4;
 
 		if ((this->vertices[ptId0].old_to_new>=0)&&
@@ -3904,19 +3905,19 @@ fail4:
 
 FailLeft4:
 
-		if (this->PossibleParent(ptId3)!=1) 
+		if (this->PossibleParent(ptId3)!=1)
 			goto FailRight4;
 
-		if (this->MatchParents(ptId4,ptId2,ptId5,f3,f4,3)!=1) 
+		if (this->MatchParents(ptId4,ptId2,ptId5,f3,f4,3)!=1)
 			goto FailRight4;
 
-		if (this->MergeInput->IsEdge(ptId2,ptId3)>=0) 
+		if (this->MergeInput->IsEdge(ptId2,ptId3)>=0)
 			goto FailRight4;
 
 		if ((this->vertices[ptId2].old_to_new>=0)&&
 			(this->vertices[ptId3].old_to_new>=0))
 		{
-			if (this->MergeOutput->IsEdge(this->vertices[ptId2].old_to_new,this->vertices[ptId3].old_to_new)>=0) 
+			if (this->MergeOutput->IsEdge(this->vertices[ptId2].old_to_new,this->vertices[ptId3].old_to_new)>=0)
 				goto FailRight4;
 		}
 
@@ -3955,35 +3956,35 @@ FailRight4:
 		}
 
 failperm2:
-		if (this->PossibleParent(ptId3)!=1) 
+		if (this->PossibleParent(ptId3)!=1)
 			goto fail;
 
-		if (this->PossibleParent(ptId4)!=1) 
+		if (this->PossibleParent(ptId4)!=1)
 			goto fail;
 
 		TestLeft=0;
 		TestRight=0;
 
-		if (this->MergeInput->IsEdge(ptId2,ptId3)>=0) 
+		if (this->MergeInput->IsEdge(ptId2,ptId3)>=0)
 			goto FailLeft5;
 
 		if ((this->vertices[ptId2].old_to_new>=0)&&
 			(this->vertices[ptId3].old_to_new>=0))
 		{
-			if (this->MergeOutput->IsEdge(this->vertices[ptId2].old_to_new,this->vertices[ptId3].old_to_new)>=0) 
+			if (this->MergeOutput->IsEdge(this->vertices[ptId2].old_to_new,this->vertices[ptId3].old_to_new)>=0)
 				goto FailLeft5;
 		}
 
 		TestLeft=1;
 
 FailLeft5:
-		if (this->MergeInput->IsEdge(ptId0,ptId4)>=0) 
+		if (this->MergeInput->IsEdge(ptId0,ptId4)>=0)
 			goto FailRight5;
 
 		if ((this->vertices[ptId0].old_to_new>=0)&&
 			(this->vertices[ptId4].old_to_new>=0))
 		{
-			if (this->MergeOutput->IsEdge(this->vertices[ptId0].old_to_new,this->vertices[ptId4].old_to_new)>=0) 
+			if (this->MergeOutput->IsEdge(this->vertices[ptId0].old_to_new,this->vertices[ptId4].old_to_new)>=0)
 				goto FailRight5;
 		}
 
@@ -4041,24 +4042,24 @@ failchild:
 		if (f2<0)
 			goto FailLeft2;
 
-		if (this->faces[f2].hirestype>0) 
+		if (this->faces[f2].hirestype>0)
 			goto FailLeft2;
 
 		this->MergeInput->Conquer(f2,ptId2,ptId3,f3,ptId4);
 
-		if (f3<0) 
+		if (f3<0)
 			goto FailLeft2;
 
-		if (this->faces[f3].hirestype>=0) 
+		if (this->faces[f3].hirestype>=0)
 			goto FailLeft2;
 
-		if (this->MatchParents(ptId2,ptId1,ptId4,f1,f3,3)!=1) 
+		if (this->MatchParents(ptId2,ptId1,ptId4,f1,f3,3)!=1)
 			goto FailLeft2;
 
-		if (this->MatchParents(ptId3,ptId0,ptId4,f2,f3,2)!=1) 
+		if (this->MatchParents(ptId3,ptId0,ptId4,f2,f3,2)!=1)
 			goto FailLeft2;
 
-		if (this->PossibleParent(ptId4)!=1) 
+		if (this->PossibleParent(ptId4)!=1)
 			goto FailLeft2;
 
 		TestLeft=1;
@@ -4066,27 +4067,27 @@ failchild:
 FailLeft2:
 		this->MergeInput->Conquer(f1,ptId1,ptId2,f4,ptId5);
 
-		if (f4<0) 
+		if (f4<0)
 			goto FailRight2;
 
-		if (this->faces[f4].hirestype>0) 
+		if (this->faces[f4].hirestype>0)
 			goto FailRight2;
 
 		this->MergeInput->Conquer(f4,ptId2,ptId5,f5,ptId6);
 
-		if (f5<0) 
+		if (f5<0)
 			goto FailRight2;
 
-		if (this->faces[f5].hirestype>0) 
+		if (this->faces[f5].hirestype>0)
 			goto FailRight2;
 
-		if (this->MatchParents(ptId5,ptId6,ptId1,f5,f4,2)!=1) 
+		if (this->MatchParents(ptId5,ptId6,ptId1,f5,f4,2)!=1)
 			goto FailRight2;
 
-		if (this->MatchParents(ptId2,ptId6,ptId0,f5,f1,3)!=1) 
+		if (this->MatchParents(ptId2,ptId6,ptId0,f5,f1,3)!=1)
 			goto FailRight2;
 
-		if (this->PossibleParent(ptId6)!=1) 
+		if (this->PossibleParent(ptId6)!=1)
 			goto FailRight2;
 
 		TestRight=1;
@@ -4127,16 +4128,16 @@ FailRight2:
 
 		this->MergeInput->Conquer(f1,ptId0,ptId2,f2,ptId3);
 
-		if (f2<0) 
+		if (f2<0)
 			goto FailLeft3;
 
-		if (this->faces[f2].hirestype>0) 
+		if (this->faces[f2].hirestype>0)
 			goto FailLeft3;
 
-		if (this->PossibleParent(ptId3)!=1) 
+		if (this->PossibleParent(ptId3)!=1)
 			goto FailLeft3;
 
-		if (this->MatchParents(ptId2,ptId1,ptId3,f1,f2,2)!=1) 
+		if (this->MatchParents(ptId2,ptId1,ptId3,f1,f2,2)!=1)
 			goto FailLeft3;
 
 		TestLeft=1;
@@ -4144,16 +4145,16 @@ FailRight2:
 FailLeft3:
 		this->MergeInput->Conquer(f1,ptId1,ptId2,f3,ptId4);
 
-		if (f3<0) 
+		if (f3<0)
 			goto FailRight3;
 
-		if (this->faces[f3].hirestype>0) 
+		if (this->faces[f3].hirestype>0)
 			goto FailRight3;
 
-		if (this->PossibleParent(ptId4)!=1) 
+		if (this->PossibleParent(ptId4)!=1)
 			goto FailRight3;
 
-		if (this->MatchParents(ptId2,ptId0,ptId4,f1,f3,2)!=1) 
+		if (this->MatchParents(ptId2,ptId0,ptId4,f1,f3,2)!=1)
 			goto FailRight3;
 
 		TestRight=1;
@@ -4189,39 +4190,39 @@ FailRight3:
 			}
 		}
 
-		//	ici interviennent les permutations d'arête
+		//	ici interviennent les permutations d'arï¿½te
 
 		TestLeft=0;
 		TestRight=0;
 
 		this->MergeInput->Conquer(f1,ptId0,ptId2,f2,ptId3);
 
-		if (f2<0) 
+		if (f2<0)
 			goto FailLeft6;
 
-		if (this->faces[f2].hirestype>=0) 
+		if (this->faces[f2].hirestype>=0)
 			goto FailLeft6;
 
 		this->MergeInput->Conquer(f2,ptId0,ptId3,f3,ptId4);
 
-		if (f3<0) 
+		if (f3<0)
 			goto FailLeft6;
 
-		if (this->faces[f3].hirestype>=0) 
+		if (this->faces[f3].hirestype>=0)
 			goto FailLeft6;
 
 		//
 		this->MergeInput->Conquer(f2,ptId3,ptId2,f4,ptId5);
-		if (f4<0) 
+		if (f4<0)
 			goto FailLeft6;
 
-		if (this->faces[f4].hirestype>=0) 
+		if (this->faces[f4].hirestype>=0)
 			goto FailLeft6;
 
-		if (this->PossibleParent(ptId4)!=1) 
+		if (this->PossibleParent(ptId4)!=1)
 			goto FailLeft6;
 
-		if (this->PossibleParent(ptId5)!=1) 
+		if (this->PossibleParent(ptId5)!=1)
 			goto FailLeft6;
 
 		if (this->MatchParents(ptId3,ptId4,ptId5,f3,f4,3)!=1)
@@ -4230,13 +4231,13 @@ FailRight3:
 		if (this->MatchParents(ptId2,ptId1,ptId5,f1,f4,3)!=1)
 			goto FailLeft6;
 
-		if (this->MergeInput->IsEdge(ptId0,ptId5)>=0) 
+		if (this->MergeInput->IsEdge(ptId0,ptId5)>=0)
 			goto FailLeft6;
 
 		if ((this->vertices[ptId0].old_to_new>=0)&&
 			(this->vertices[ptId5].old_to_new>=0))
 		{
-			if (this->MergeOutput->IsEdge(this->vertices[ptId0].old_to_new,this->vertices[ptId5].old_to_new)>=0) 
+			if (this->MergeOutput->IsEdge(this->vertices[ptId0].old_to_new,this->vertices[ptId5].old_to_new)>=0)
 				goto FailLeft6;
 		}
 
@@ -4245,35 +4246,35 @@ FailRight3:
 FailLeft6:
 		this->MergeInput->Conquer(f1,ptId1,ptId2,f5,ptId6);
 
-		if (f5<0) 
+		if (f5<0)
 			goto FailRight6;
 
-		if (this->faces[f5].hirestype>=0) 
+		if (this->faces[f5].hirestype>=0)
 			goto FailRight6;
 
 		this->MergeInput->Conquer(f5,ptId1,ptId6,f6,ptId7);
-		if (f6<0) 
+		if (f6<0)
 			goto FailRight6;
 
-		if (this->faces[f6].hirestype>=0) 
+		if (this->faces[f6].hirestype>=0)
 			goto FailRight6;
 		//
 		this->MergeInput->Conquer(f5,ptId6,ptId2,f7,ptId8);
 
-		if (f7<0) 
+		if (f7<0)
 			goto FailRight6;
 
-		if (this->faces[f7].hirestype>=0) 
+		if (this->faces[f7].hirestype>=0)
 			goto FailRight6;
 
 
-		if (this->PossibleParent(ptId7)!=1) 
+		if (this->PossibleParent(ptId7)!=1)
 			goto FailRight6;
 
-		if (this->PossibleParent(ptId8)!=1) 
+		if (this->PossibleParent(ptId8)!=1)
 			goto FailRight6;
 
-		if (this->MatchParents(ptId6,ptId7,ptId8,f6,f7,3)!=1) 
+		if (this->MatchParents(ptId6,ptId7,ptId8,f6,f7,3)!=1)
 			goto FailRight6;
 
 		if (this->MatchParents(ptId2,ptId0,ptId8,f1,f7,3)!=1)
@@ -4284,7 +4285,7 @@ FailLeft6:
 
 		if ((this->vertices[ptId1].old_to_new>=0)&&(this->vertices[ptId8].old_to_new>=0))
 		{
-			if (this->MergeOutput->IsEdge(this->vertices[ptId1].old_to_new,this->vertices[ptId8].old_to_new)>=0) 
+			if (this->MergeOutput->IsEdge(this->vertices[ptId1].old_to_new,this->vertices[ptId8].old_to_new)>=0)
 				goto FailRight6;
 		}
 
@@ -4327,39 +4328,39 @@ FailRight6:
 
 		MergeType=0;
 
-		if (f2<0) 
+		if (f2<0)
 			goto FailRight7;
 
-		if (this->faces[f2].hirestype>=0) 
+		if (this->faces[f2].hirestype>=0)
 			goto FailRight7;
 
 		this->MergeInput->Conquer(f1,ptId0,ptId2,f3,ptId4);
 
-		if (f3<0) 
+		if (f3<0)
 			goto FailRight7;
 
-		if (this->faces[f3].hirestype>=0) 
+		if (this->faces[f3].hirestype>=0)
 			goto FailRight7;
 
-		if (this->PossibleParent(ptId3)!=1) 
+		if (this->PossibleParent(ptId3)!=1)
 			goto FailRight7;
 
-		if (this->PossibleParent(ptId4)!=1) 
+		if (this->PossibleParent(ptId4)!=1)
 			goto FailRight7;
 
-		if (this->MatchParents(ptId2,ptId3,ptId4,f2,f3,3)!=1) 
+		if (this->MatchParents(ptId2,ptId3,ptId4,f2,f3,3)!=1)
 			goto FailRight7;
 
 		TestLeft=0;
 		TestRight=0;
 
-		if (this->MergeInput->IsEdge(ptId1,ptId4)>=0) 
+		if (this->MergeInput->IsEdge(ptId1,ptId4)>=0)
 			goto FailLeft7;
 
 		if ((this->vertices[ptId1].old_to_new>=0)&&
 			(this->vertices[ptId4].old_to_new>=0))
 		{
-			if (this->MergeOutput->IsEdge(this->vertices[ptId1].old_to_new,this->vertices[ptId4].old_to_new)>=0) 
+			if (this->MergeOutput->IsEdge(this->vertices[ptId1].old_to_new,this->vertices[ptId4].old_to_new)>=0)
 				goto FailLeft7;
 		}
 
@@ -4369,13 +4370,13 @@ FailRight6:
 
 
 FailLeft7:
-		if (this->MergeInput->IsEdge(ptId0,ptId3)>=0) 
+		if (this->MergeInput->IsEdge(ptId0,ptId3)>=0)
 			goto FailRight7;
 
 		if ((this->vertices[ptId0].old_to_new>=0)&&
 			(this->vertices[ptId3].old_to_new>=0))
 		{
-			if (this->MergeOutput->IsEdge(this->vertices[ptId0].old_to_new,this->vertices[ptId3].old_to_new)>=0) 
+			if (this->MergeOutput->IsEdge(this->vertices[ptId0].old_to_new,this->vertices[ptId3].old_to_new)>=0)
 				goto FailRight7;
 		}
 
@@ -4400,36 +4401,36 @@ FailLeft7:
 FailRight7:
 		this->MergeInput->Conquer(f1,ptId0,ptId2,f3,ptId4);
 
-		if (f3<0) 
+		if (f3<0)
 			goto FailRight8;
 
-		if (this->faces[f3].hirestype>=0) 
+		if (this->faces[f3].hirestype>=0)
 			goto FailRight8;
 
 		this->MergeInput->Conquer(f3,ptId2,ptId4,f5,ptId6);
 
-		if (f5<0) 
+		if (f5<0)
 			goto FailRight8;
 
-		if (this->faces[f5].hirestype>=0) 
+		if (this->faces[f5].hirestype>=0)
 			goto FailRight8;
 
-		if (this->PossibleParent(ptId4)!=1) 
+		if (this->PossibleParent(ptId4)!=1)
 			goto FailRight8;
 
-		if (this->PossibleParent(ptId6)!=1) 
+		if (this->PossibleParent(ptId6)!=1)
 			goto FailRight8;
 
-		if (this->MatchParents(ptId2,ptId1,ptId6,f1,f5,3)!=1) 
+		if (this->MatchParents(ptId2,ptId1,ptId6,f1,f5,3)!=1)
 			goto FailRight8;
 
-		if (this->MergeInput->IsEdge(ptId0,ptId6)>=0) 
+		if (this->MergeInput->IsEdge(ptId0,ptId6)>=0)
 			goto FailLeft8;
 
 		if ((this->vertices[ptId0].old_to_new>=0)&&
 			(this->vertices[ptId6].old_to_new>=0))
 		{
-			if (this->MergeOutput->IsEdge(this->vertices[ptId0].old_to_new,this->vertices[ptId6].old_to_new)>=0) 
+			if (this->MergeOutput->IsEdge(this->vertices[ptId0].old_to_new,this->vertices[ptId6].old_to_new)>=0)
 				goto FailLeft8;
 		}
 
@@ -4450,13 +4451,13 @@ FailRight7:
 		}
 
 FailLeft8:
-		if (this->MergeInput->IsEdge(ptId1,ptId4)>=0) 
+		if (this->MergeInput->IsEdge(ptId1,ptId4)>=0)
 			goto FailRight8;
 
 		if ((this->vertices[ptId1].old_to_new>=0)&&
 			(this->vertices[ptId4].old_to_new>=0))
 		{
-			if (this->MergeOutput->IsEdge(this->vertices[ptId1].old_to_new,this->vertices[ptId4].old_to_new)>=0) 
+			if (this->MergeOutput->IsEdge(this->vertices[ptId1].old_to_new,this->vertices[ptId4].old_to_new)>=0)
 				goto FailRight8;
 		}
 
@@ -4479,36 +4480,36 @@ FailLeft8:
 FailRight8:
 		this->MergeInput->Conquer(f1,ptId1,ptId2,f2,ptId3);
 
-		if (f2<0) 
+		if (f2<0)
 			goto FailRight9;
 
-		if (this->faces[f2].hirestype>=0) 
+		if (this->faces[f2].hirestype>=0)
 			goto FailRight9;
 
 		this->MergeInput->Conquer(f2,ptId2,ptId3,f4,ptId5);
 
-		if (f4<0) 
+		if (f4<0)
 			goto FailRight9;
 
 		if (this->faces[f4].hirestype>=0)
 			goto FailRight9;
 
-		if (this->PossibleParent(ptId3)!=1) 
+		if (this->PossibleParent(ptId3)!=1)
 			goto FailRight9;
 
-		if (this->PossibleParent(ptId5)!=1) 
+		if (this->PossibleParent(ptId5)!=1)
 			goto FailRight9;
 
-		if (this->MatchParents(ptId2,ptId0,ptId5,f1,f4,3)!=1) 
+		if (this->MatchParents(ptId2,ptId0,ptId5,f1,f4,3)!=1)
 			goto FailRight9;
 
-		if (this->MergeInput->IsEdge(ptId0,ptId3)>=0) 
+		if (this->MergeInput->IsEdge(ptId0,ptId3)>=0)
 			goto FailLeft9;
 
 		if ((this->vertices[ptId0].old_to_new>=0)&&
 			(this->vertices[ptId3].old_to_new>=0))
 		{
-			if (this->MergeOutput->IsEdge(this->vertices[ptId0].old_to_new,this->vertices[ptId3].old_to_new)>=0) 
+			if (this->MergeOutput->IsEdge(this->vertices[ptId0].old_to_new,this->vertices[ptId3].old_to_new)>=0)
 				goto FailLeft9;
 		}
 
@@ -4530,7 +4531,7 @@ FailRight8:
 
 
 FailLeft9:
-		if (this->MergeInput->IsEdge(ptId1,ptId5)>=0) 
+		if (this->MergeInput->IsEdge(ptId1,ptId5)>=0)
 			goto FailRight9;
 
 		if ((this->vertices[ptId1].old_to_new>=0)&&
@@ -4597,14 +4598,14 @@ FailRight9:
 		}
 
 
-faillast:	
+faillast:
 		if (this->PossibleParent(ptId2)!=1)
 			goto fail;
 
 		this->Merge1To1(ptId0,ptId1,ptId2,f1);
 
 Success:
-		found=1;	
+		found=1;
 
 fail:
 		if (found==0)
@@ -4637,7 +4638,7 @@ void vtkWaveletSubdivisionFilter::switchcontour2(vtkIdType edge)
 		edge2=this->MergeInput->IsEdge(v1,v2);
 		this->MergeInput->GetEdgeFaces(edge2,f1,f2);
 
-		if (f2<0) 
+		if (f2<0)
 			return;
 	}
 	else
@@ -4645,7 +4646,7 @@ void vtkWaveletSubdivisionFilter::switchcontour2(vtkIdType edge)
 		edge2=this->MergeInput->IsEdge(v1,v3);
 		this->MergeInput->GetEdgeFaces(edge2,f1,f2);
 
-		if (f2<0) 
+		if (f2<0)
 			return;
 	}
 
@@ -4686,7 +4687,7 @@ void vtkWaveletSubdivisionFilter::switchcontour2(vtkIdType edge)
 			this->MergeInput->GetEdgeFaces(edge2,f1,f2);
 
 			if ((this->faces[f1].hirestype>=0)&&
-				(this->faces[f2].hirestype>=0)) 
+				(this->faces[f2].hirestype>=0))
 				return;
 
 			edgesvector[edge].contour=new contour_element;
@@ -4791,7 +4792,7 @@ void vtkWaveletSubdivisionFilter::switchcontour2(vtkIdType edge)
 
 					this->edgesvector[edge].contour=0;
 
-					return;		
+					return;
 				}
 			}
 		}
@@ -4833,7 +4834,7 @@ void vtkWaveletSubdivisionFilter::ConquerRegularSubdivisions()
 				goto failregular;
 
 			if (faces[f4].hirestype>0)
-				goto failregular;	
+				goto failregular;
 
 			if (((vertices[ptId3].type==PARENT)||(vertices[ptId4].type==PARENT))
 				||(vertices[ptId5].type==CHILD))

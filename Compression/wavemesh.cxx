@@ -7,10 +7,12 @@
   Auteur:    Sebastien Valette
     This software is governed by the GPL license (see License.txt)
 =========================================================================*/
-// .NAME wavemesh 
+// .NAME wavemesh
 // .SECTION Description
 
 #include "vtkMultiresolutionIO.h"
+using std::cout;
+using std::endl;
 
 int main( int argc, char *argv[] )
 {
@@ -41,7 +43,7 @@ int main( int argc, char *argv[] )
 		cout<<"-et threshold : defines the edge angle threshold (default : 0.3)"<<endl;
 		cout<<"-wt threshold : defines the wavelet ratio threshold (default : 0.25)"<<endl;
 		cout<<"-o filename : defines the compressed output file name (default : out.ddd)"<<endl;
-		
+
 		return (0);
 	}
 	else
@@ -106,7 +108,7 @@ int main( int argc, char *argv[] )
 			cout<<"Geometric constraints for simplification :"<<Geometry<<endl;
 			MIO->SetGeometricalConstraint(Geometry);
 		}
-		
+
 		if (strcmp(argv[ArgumentsIndex],"-et")==0)
 		{
 			double Threshold=atof(argv[ArgumentsIndex+1]);
@@ -125,7 +127,7 @@ int main( int argc, char *argv[] )
 		{
 			cout<<"Output File : "<<argv[ArgumentsIndex+1]<<endl;
 			MIO->SetFileName(argv[ArgumentsIndex+1]);
-		}					
+		}
 		ArgumentsIndex+=2;
 	}
 

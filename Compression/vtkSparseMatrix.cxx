@@ -1,7 +1,8 @@
 //  This software is governed by the GPL license (see License.txt)
+#include <iostream>
 #include "vtkSparseMatrix.h"
 
-vtkSparseMatrix::~vtkSparseMatrix()	
+vtkSparseMatrix::~vtkSparseMatrix()
 {
 	int i;
 	NonZeroElement *next,*last;
@@ -37,7 +38,7 @@ void vtkSparseMatrix::Init(int i,int j)
 
 void vtkSparseMatrix::AddValue(int i, int j, double Value)
 {
-	
+
 int found_place,new_place;
 NonZeroElement *new_non_zero,*last,*next;
 
@@ -61,8 +62,8 @@ NonZeroElement *new_non_zero,*last,*next;
 			if (next->j>j)
 			{
 				new_non_zero=new NonZeroElement;
-				if (new_non_zero==0) 
-					cout<<"probleme mémoire"<<endl;
+				if (new_non_zero==0)
+					std::cout<<"memory issue!"<<std::endl;
 				new_non_zero->Value=Value;
 				new_non_zero->i=i;
 				new_non_zero->j=j;
@@ -89,7 +90,7 @@ NonZeroElement *new_non_zero,*last,*next;
 					{
 						new_non_zero=new  NonZeroElement;
 						if (new_non_zero==0)
-							cout<<"problème mémoire"<<endl;;
+							std::cout<<"memory issue!"<<std::endl;;
 						new_non_zero->j=j;
 						new_non_zero->i=i;
 						new_non_zero->Value=Value;

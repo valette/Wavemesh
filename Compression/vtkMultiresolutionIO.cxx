@@ -1,6 +1,6 @@
 /*=========================================================================
 
-Program:   Mailleur 3D multi-résolution (Creatis 1997 ~)
+Program:   Mailleur 3D multi-resolution (Creatis 1997 ~)
 Module:    vtkMultiresolutionIO.cxx
 Language:  C++
 Date:      2003/05
@@ -24,6 +24,7 @@ Auteurs:   Sebastien Valette
 #include "vtkSurface.h"
 #include "vtkMultiresolutionIO.h"
 
+using std::cout;
 
 void vtkMultiresolutionIO::PrintInsignificantCoeffs()
 {
@@ -126,7 +127,7 @@ void vtkMultiresolutionIO::DecodeLiftingProperties()
 		if (LiftingTest==-1)
 		{
 			this->Lifting=0;
-			this->LiftingRadius=0;			
+			this->LiftingRadius=0;
 		}
 		else
 		{
@@ -243,7 +244,7 @@ void vtkMultiresolutionIO::DecodeMeshGeometry(vtkSurface *Mesh)
 		for (i=0;i<NumberOfPoints;i++)
 		{
 			for (j=0;j<3;j++)
-			{		
+			{
 				P[j]=this->ArithmeticCoder->DecodeFloat();
 			}
 			Mesh->SetPointCoordinates(i,P);
@@ -254,7 +255,7 @@ void vtkMultiresolutionIO::DecodeMeshGeometry(vtkSurface *Mesh)
 		for (i=0;i<NumberOfPoints;i++)
 		{
 			for (j=0;j<3;j++)
-			{		
+			{
 				P[j]=(this->ArithmeticCoder->DecodeWord()-16384);
 			}
 			Mesh->SetPointCoordinates(i,P);
@@ -349,7 +350,7 @@ void vtkMultiresolutionIO::EncodeSign(int Sign)
 int vtkMultiresolutionIO::DecodeSignificance(int Coord)
 {
 	return (this->ArithmeticCoder->DecodeBit());
-	int S; 
+	int S;
 	S=this->ArithmeticCoder->DecodeSignificance(Coord,0);
 	this->SignificanceCodes++;
 	return (S);
@@ -357,7 +358,7 @@ int vtkMultiresolutionIO::DecodeSignificance(int Coord)
 
 int vtkMultiresolutionIO::DecodeCoeffRefinement()
 {
-	int Coeff; 
+	int Coeff;
 	Coeff=this->ArithmeticCoder->DecodeSignOrRefinement();
 	return (Coeff);
 };
@@ -385,7 +386,7 @@ void vtkMultiresolutionIO::GetFirstGoodEdge(vtkIdType Edge,vtkIdType FilterId, v
 	{
 		Edge2=this->Filters[FilterId2]->TreeFirstChildEdge->GetId(Edge2);
 		FilterId2--;
-		Vertex=this->EdgeMidPoints[FilterId2]->GetId(Edge2);		
+		Vertex=this->EdgeMidPoints[FilterId2]->GetId(Edge2);
 	}
 	return;
 }
@@ -443,7 +444,7 @@ void vtkMultiresolutionIO::ComputeWaveletTree ()
 		}
 		if (i>0)
 		{
-			NumberOfEdges=this->Filters[i]->GetOutput()->GetNumberOfEdges();	
+			NumberOfEdges=this->Filters[i]->GetOutput()->GetNumberOfEdges();
 
 			for (j=0;j<NumberOfEdges;j++)
 			{
@@ -470,7 +471,7 @@ void vtkMultiresolutionIO::EncodeProgressivePrecision()
 	double Max[3],*Wav,AbsoluteCoeff;
 	vtkIdType Vertex,Edge;
 	vtkIdType NumberOfVertices,FilterId;
-	int Count=0; 
+	int Count=0;
 
 	for (i=0;i<3;i++)
 	{
@@ -506,7 +507,7 @@ void vtkMultiresolutionIO::EncodeProgressivePrecision()
 		this->Filters[i]->ArithmeticCoder=this->ArithmeticCoder;
 		this->Filters[i]->Subdivide();
 	}
-	
+
 	this->ConnectivityBytes=this->ArithmeticCoder->StopCoding();
 	this->ArithmeticCoder->StartCoding();
 
@@ -750,7 +751,7 @@ void vtkMultiresolutionIO::EncodeProgressivePrecision()
 						}
 					}
 				}
-			}		
+			}
 
 			// Refinement pass
 			int newnumber=0,k,Ptest;
@@ -874,13 +875,13 @@ void vtkMultiresolutionIO::DecodeProgressivePrecision()
 			else
 				SubdivisionType=2;
 		}
-		
+
 		this->Filters[j]=this->NewFilter(SubdivisionType);
 
 		this->Filters[j]->SetInput(this->SynthesisMeshes[j+1]);
 
 		this->Filters[j]->SetSubdivisionType(SubdivisionType);
-		this->Filters[j]->SetIOType(2);	
+		this->Filters[j]->SetIOType(2);
 		this->Filters[j]->SetLifting(this->Lifting);
 		this->Filters[j]->SetLiftingRadius(this->LiftingRadius);
 		this->Filters[j]->GeometryPrediction=this->GeometryPrediction;
@@ -1133,7 +1134,7 @@ void vtkMultiresolutionIO::DecodeProgressivePrecision()
 						}
 					}
 				}
-			}		
+			}
 
 			// Refinement pass
 			int newnumber=0,ref;
@@ -1319,14 +1320,14 @@ void vtkMultiresolutionIO::DecodeProgressiveResolution()
 		finish2=this->Timer->GetCurrentTime();
 		while (finish2 - start2<this->Time)
 			finish2=this->Timer->GetCurrentTime();
-#endif			
+#endif
 		this->MeshWindow->Interact();
 	}
 
 	for (j=this->NumberOfFilters-1;j>=0;j--)
 	{
 		this->Filters[j]->SetInput(this->SynthesisMeshes[j+1]);
-		this->Filters[j]->SetIOType(2);	
+		this->Filters[j]->SetIOType(2);
 		this->Filters[j]->SetLifting(this->Lifting);
 		this->Filters[j]->SetLiftingRadius(this->LiftingRadius);
 		this->Filters[j]->SetArithmeticType(1);
@@ -1489,7 +1490,7 @@ void vtkMultiresolutionIO::EncodeProgressiveResolution()
 		this->Filters[j]->SetPointsIds(this->PointsIds);
 		this->Filters[j]->SetInput(this->SynthesisMeshes[j+1]);
 
-		
+
 		if (j==this->NumberOfFilters-1)
 		{
 			if (this->Filters[0]->GetMergeInput()!=0)
@@ -1505,7 +1506,7 @@ void vtkMultiresolutionIO::EncodeProgressiveResolution()
 		ConnectivityBitrate[j]=this->ArithmeticCoder->StopCoding()*8;
 		this->ArithmeticCoder->StartCoding();
 		this->Filters[j]->WriteCoefficients();
-		this->Filters[j]->Reconstruct();	
+		this->Filters[j]->Reconstruct();
 		GeometryBitrate[j]=this->ArithmeticCoder->StopCoding()*8;
 	}
 	this->ArithmeticCoder->CloseFile();
@@ -1560,7 +1561,7 @@ void vtkMultiresolutionIO::EncodeProgressiveResolution()
 		for (j=this->NumberOfFilters-1;j>=0;j--)
 		{
 			encodedbits+=ConnectivityBitrate[j]+GeometryBitrate[j];
-			
+
 			double RelativeBitrate=encodedbits/(double) this->Filters[0]->GetOutput()->GetNumberOfPoints();
 
 			connectivitybits+=ConnectivityBitrate[j];
@@ -1670,7 +1671,7 @@ void vtkMultiresolutionIO::Analyse()
 			if (this->Display!=0)
 			{
 				if (this->GeometricConstraint==1)
-				{	
+				{
 					vtkLookupTable *lut=vtkLookupTable::New();
 					this->MeshWindow->SetLookupTable(lut);
 					this->AnalysisMeshes[i+1]->ComputeSharpVertices(this->EdgeAngleThreshold);
@@ -1732,7 +1733,7 @@ void vtkMultiresolutionIO::Synthetize()
 	for (j=this->NumberOfFilters-1;j>=0;j--)
 	{
 		this->Filters[j]->SetPointsIds(this->PointsIds);
-		this->Filters[j]->SetInput(this->SynthesisMeshes[j+1]);			
+		this->Filters[j]->SetInput(this->SynthesisMeshes[j+1]);
 		this->Filters[j]->Subdivide();
 
 		this->SynthesisMeshes[j]=this->Filters[j]->GetOutput();
@@ -1769,7 +1770,7 @@ void vtkMultiresolutionIO::DisplayHires()
 	this->MeshWindow->SetInputData(this->SynthesisMeshes[0]);
 	this->MeshWindow->Render();
 	this->MeshWindow->Interact();
-}	
+}
 
 vtkMultiresolutionIO* vtkMultiresolutionIO::New()
 {
@@ -1819,10 +1820,10 @@ vtkMultiresolutionIO::~vtkMultiresolutionIO()
 	int i;
 	for (i=0;i<this->NumberOfFilters;i++)
 		this->Filters[i]->Delete();
-	
+
 	if (this->NumberOfFilters!=0)
 		this->SynthesisMeshes[this->NumberOfFilters]->Delete();
-		
+
 	if (this->Input)
 		this->Input->UnRegister(this);
 

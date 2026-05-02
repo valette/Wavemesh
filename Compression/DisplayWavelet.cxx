@@ -7,11 +7,12 @@
   Auteur:    Sebastien Valette
   This software is governed by the GPL license (see License.txt)
 =========================================================================*/
-// .NAME DisplayWavelet 
+// .NAME DisplayWavelet
 // .SECTION Description
 
 #include "RenderWindow.h"
 #include "vtkWaveletSubdivisionFilter.h"
+using std::cout;
 
 int main( int argc, char *argv[] )
 {
@@ -75,10 +76,10 @@ int main( int argc, char *argv[] )
 
 
 	Filters[NumberOfFilters-1]->DisplayWavelet();
-	
+
 	RenderWindow *Window=RenderWindow::New();
 	Window->SetInputData(Filters[NumberOfFilters-1]->GetOutput());
-	
+
 	Window->Render();
 	Window->Interact();
 
